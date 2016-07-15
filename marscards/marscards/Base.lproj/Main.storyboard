@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="nGK-bO-cUm">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--marscards-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HomeViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="vao-YY-37Q">
+                                <rect key="frame" x="193" y="152" width="214" height="296"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2ND-0B-sd0">
+                                        <rect key="frame" x="0.0" y="0.0" width="214" height="30"/>
+                                        <state key="normal" title="0. make deck"/>
+                                        <connections>
+                                            <action selector="touchButtonZero:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qrR-Fx-d73"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b47-o0-OHk">
+                                        <rect key="frame" x="0.0" y="38" width="214" height="30"/>
+                                        <state key="normal" title="1. Draw card to hand"/>
+                                        <connections>
+                                            <action selector="touchButtonOne" destination="BYZ-38-t0r" eventType="touchUpInside" id="F2W-7N-BlL"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z9h-Jf-vCO">
+                                        <rect key="frame" x="0.0" y="76" width="214" height="30"/>
+                                        <state key="normal" title="2. Place a card in hand on deck"/>
+                                        <connections>
+                                            <action selector="touchButtonTwo" destination="BYZ-38-t0r" eventType="touchUpInside" id="FlH-ss-nYG"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lFy-92-4Zk">
+                                        <rect key="frame" x="0.0" y="114" width="214" height="30"/>
+                                        <state key="normal" title="3. Shuffle deck"/>
+                                        <connections>
+                                            <action selector="touchButtonThree" destination="BYZ-38-t0r" eventType="touchUpInside" id="bnI-ow-BDV"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Z8-1C-FMv">
+                                        <rect key="frame" x="0.0" y="152" width="214" height="30"/>
+                                        <state key="normal" title="4. Sort deck"/>
+                                        <connections>
+                                            <action selector="touchButtonFour" destination="BYZ-38-t0r" eventType="touchUpInside" id="DjY-Lt-CMK"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y3p-ir-p09">
+                                        <rect key="frame" x="0.0" y="190" width="214" height="30"/>
+                                        <state key="normal" title="5. View cards in hand"/>
+                                        <connections>
+                                            <action selector="touchButtonFive" destination="BYZ-38-t0r" eventType="touchUpInside" id="AqE-11-gic"/>
+                                            <segue destination="wVH-Rb-92d" kind="show" identifier="buttonFiveSegue" id="Db1-WZ-SJr"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8VE-mz-0fc">
+                                        <rect key="frame" x="0.0" y="228" width="214" height="30"/>
+                                        <state key="normal" title="6. View cards in deck"/>
+                                        <connections>
+                                            <action selector="touchButtonSix" destination="BYZ-38-t0r" eventType="touchUpInside" id="iv4-qa-yNu"/>
+                                            <segue destination="wVH-Rb-92d" kind="show" identifier="buttonSixSegue" id="adt-Wg-nHl"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="action label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aF-Wh-bB4">
+                                        <rect key="frame" x="0.0" y="266" width="214" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="vao-YY-37Q" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5kH-jK-J45"/>
+                            <constraint firstItem="vao-YY-37Q" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="iGb-JB-xyQ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="marscards" id="p9b-zO-8Lc"/>
+                    <connections>
+                        <outlet property="actionLabelOutlet" destination="1aF-Wh-bB4" id="iEm-8i-12J"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1188" y="-398"/>
+        </scene>
+        <!--Card Stack Table View Controller-->
+        <scene sceneID="vNo-eF-stu">
+            <objects>
+                <tableViewController id="wVH-Rb-92d" customClass="CardStackTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" id="UwM-ec-B8J">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cardCell" rowHeight="65" id="AAS-6r-8uv">
+                                <rect key="frame" x="0.0" y="92" width="600" height="65"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="cardCell" tableViewCell="AAS-6r-8uv" id="AoC-Lc-Yoh">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="65"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Card" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L1O-5V-Ax6">
+                                            <rect key="frame" x="50" y="18" width="500" height="30"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="wVH-Rb-92d" id="vcI-Ug-Oui"/>
+                            <outlet property="delegate" destination="wVH-Rb-92d" id="pes-e3-Xjw"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="table" destination="UwM-ec-B8J" id="hjX-i5-lKF"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Usg-Om-dC9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1946" y="-398"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="S6l-49-gc5">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nGK-bO-cUm" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="UGV-yq-zcH">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="abh-Kb-tsJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9Jh-Ey-QzR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="386" y="-398"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="adt-Wg-nHl"/>
+    </inferredMetricsTieBreakers>
+</document>
