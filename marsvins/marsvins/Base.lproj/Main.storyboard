@@ -16,7 +16,7 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.0" green="1" blue="0.20517049461415882" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="0.0" blue="0.84212566919426912" alpha="1" colorSpace="calibratedRGB"/>
                         <gestureRecognizers/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="vBx-2T-iJ6" appends="YES" id="dOo-qd-4ga"/>
@@ -44,9 +44,26 @@
                     <view key="view" contentMode="scaleToFill" id="ui7-iZ-fsb">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="0.0" blue="0.96368906322331505" alpha="1" colorSpace="calibratedRGB"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uIW-Nf-9xO">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" red="0.0" green="1" blue="0.89623618225957058" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerY" secondItem="ui7-iZ-fsb" secondAttribute="centerY" id="AfP-8y-shk"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="leading" secondItem="ui7-iZ-fsb" secondAttribute="leading" id="Nsg-Qg-84E"/>
+                            <constraint firstAttribute="trailing" secondItem="uIW-Nf-9xO" secondAttribute="trailing" id="dmm-lQ-ScS"/>
+                            <constraint firstItem="Nue-AU-50w" firstAttribute="top" secondItem="uIW-Nf-9xO" secondAttribute="bottom" id="oiL-lP-w1x"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerX" secondItem="ui7-iZ-fsb" secondAttribute="centerX" id="puo-lG-Aor"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="top" secondItem="ui7-iZ-fsb" secondAttribute="top" id="rHj-bb-a6c"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="cameraView" destination="uIW-Nf-9xO" id="xzc-RX-fN6"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ckO-uF-i21" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

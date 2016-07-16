@@ -15,6 +15,8 @@
 		F62CF34A1D3AA35D00C06A6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */; };
 		F62CF3551D3AA35E00C06A6E /* marsvinsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3541D3AA35E00C06A6E /* marsvinsTests.m */; };
 		F62CF3611D3AA9D600C06A6E /* VinsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3601D3AA9D600C06A6E /* VinsViewController.m */; };
+		F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */; };
+		F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +45,8 @@
 		F62CF3561D3AA35E00C06A6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F62CF35F1D3AA9D600C06A6E /* VinsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VinsViewController.h; sourceTree = "<group>"; };
 		F62CF3601D3AA9D600C06A6E /* VinsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinsViewController.m; sourceTree = "<group>"; };
+		F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */,
+				F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +72,7 @@
 		F62CF32E1D3AA35D00C06A6E = {
 			isa = PBXGroup;
 			children = (
+				F62CF3691D3ABDD700C06A6E /* frameworks */,
 				F62CF3391D3AA35D00C06A6E /* marsvins */,
 				F62CF3531D3AA35E00C06A6E /* marsvinsTests */,
 				F62CF3381D3AA35D00C06A6E /* Products */,
@@ -138,6 +145,15 @@
 				F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		F62CF3691D3ABDD700C06A6E /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */,
+				F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */,
+			);
+			name = frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

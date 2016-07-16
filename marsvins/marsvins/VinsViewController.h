@@ -10,4 +10,6 @@
 
 @interface VinsViewController : UIViewController <UIGestureRecognizerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *cameraView;
+
 @end
