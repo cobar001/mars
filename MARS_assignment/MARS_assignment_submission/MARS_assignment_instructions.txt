@@ -1,0 +1,69 @@
+Programming Assignment:
+
+Using the C++ programming language, create an implementation for a simple game of cards. The user should should be able to perform the following operations:
+
+ 1.	Draw a card to hand
+ 2.	Place a card in hand on top of the deck
+ 3.	Shuffle the deck
+ 4.	Sort the deck
+ 5.	Print cards that exist in hand
+
+This deck should be able to hold different types of cards. Allow the user to choose a deck of 60 simple cards that are numbered from  0 to 59, or a deck of traditional playing cards (52 cards of 4 suites, values two to ace). When sorting the playing cards, sort them by suite first, then by value, meaning all the hearts, diamonds, clubs, and spades should be together.
+
+In addition to the card game implementation, include an executable test-case where the user can choose to execute the described operations via the command line.
+
+Example use of this program:
+
+Output:
+	Hello, choose which deck to use:
+ 1.	Simple Deck
+ 2.	Traditional Playing Cards
+Input:
+	2
+Output:
+	Choose an option:
+ 1.	Draw a card to hand
+ 2.	Place a card in hand on the deck
+ 3.	Shuffle the deck
+ 4.	Sort the deck
+ 5.	Print cards that exist in hand
+ 6.	Quit
+Input:
+	1
+Output:
+	You drew: king of hearts
+Output:
+ 1.	Choose an option:
+ 2.	Draw a card to hand
+ 3.	Place a card in hand on the deck
+ 4.	Shuffle the deck
+ 5.	Sort the deck
+ 6.	Print cards that exist in hand
+ 7.	Quit
+Input:
+	6
+Output:
+	Bye!
+
+
+
+
+This programming assignment will allow us to evaluate the following:
+
+ 1.	Knowledge of object orientated design
+ 2.	Ability to write correct and efficient algorithms
+ 3.	Data structure knowledge
+ 4.	Ability to write clean code
+
+With these four categories in mind, do your best to design and develop an object orientated implementation of this card game, while choosing the best data structures and algorithms for the task.
+
+Restrictions:
+
+You are encouraged to use the standard template library implementations of data structures (std::vector, std::map, std::list, etc.). However, you may not use the standard template library to implement sorting or shuffling.
+
+Deliverables:
+
+Please include your source code for both the card game implementation and the executable test-case, along a text file including the following:
+
+ 1.	Instructions on how to build and execute your test-case.
+ 2.	Your thought process, explaining why you designed your program the way you did.
