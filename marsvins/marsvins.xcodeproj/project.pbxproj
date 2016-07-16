@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F62CF33C1D3AA35D00C06A6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF33B1D3AA35D00C06A6E /* main.m */; };
+		F62CF33F1D3AA35D00C06A6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */; };
+		F62CF3421D3AA35D00C06A6E /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3411D3AA35D00C06A6E /* InitialViewController.m */; };
+		F62CF3451D3AA35D00C06A6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3431D3AA35D00C06A6E /* Main.storyboard */; };
+		F62CF3471D3AA35D00C06A6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3461D3AA35D00C06A6E /* Assets.xcassets */; };
+		F62CF34A1D3AA35D00C06A6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */; };
+		F62CF3551D3AA35E00C06A6E /* marsvinsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3541D3AA35E00C06A6E /* marsvinsTests.m */; };
+		F62CF3611D3AA9D600C06A6E /* VinsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3601D3AA9D600C06A6E /* VinsViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F62CF3511D3AA35E00C06A6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F62CF32F1D3AA35D00C06A6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F62CF3361D3AA35D00C06A6E;
+			remoteInfo = marsvins;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F62CF3371D3AA35D00C06A6E /* marsvins.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = marsvins.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F62CF33B1D3AA35D00C06A6E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F62CF33D1D3AA35D00C06A6E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F62CF3401D3AA35D00C06A6E /* InitialViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InitialViewController.h; sourceTree = "<group>"; };
+		F62CF3411D3AA35D00C06A6E /* InitialViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InitialViewController.m; sourceTree = "<group>"; };
+		F62CF3441D3AA35D00C06A6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F62CF3461D3AA35D00C06A6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F62CF3491D3AA35D00C06A6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F62CF34B1D3AA35D00C06A6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F62CF3501D3AA35E00C06A6E /* marsvinsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = marsvinsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F62CF3541D3AA35E00C06A6E /* marsvinsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = marsvinsTests.m; sourceTree = "<group>"; };
+		F62CF3561D3AA35E00C06A6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F62CF35F1D3AA9D600C06A6E /* VinsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VinsViewController.h; sourceTree = "<group>"; };
+		F62CF3601D3AA9D600C06A6E /* VinsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinsViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F62CF3341D3AA35D00C06A6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F62CF34D1D3AA35E00C06A6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F62CF32E1D3AA35D00C06A6E = {
+			isa = PBXGroup;
+			children = (
+				F62CF3391D3AA35D00C06A6E /* marsvins */,
+				F62CF3531D3AA35E00C06A6E /* marsvinsTests */,
+				F62CF3381D3AA35D00C06A6E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F62CF3381D3AA35D00C06A6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF3371D3AA35D00C06A6E /* marsvins.app */,
+				F62CF3501D3AA35E00C06A6E /* marsvinsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F62CF3391D3AA35D00C06A6E /* marsvins */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF3641D3AA9F600C06A6E /* Views */,
+				F62CF3631D3AA9EC00C06A6E /* Controllers */,
+				F62CF3621D3AA9E200C06A6E /* Models */,
+				F62CF33A1D3AA35D00C06A6E /* Supporting Files */,
+				F62CF34B1D3AA35D00C06A6E /* Info.plist */,
+			);
+			path = marsvins;
+			sourceTree = "<group>";
+		};
+		F62CF33A1D3AA35D00C06A6E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF33B1D3AA35D00C06A6E /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F62CF3531D3AA35E00C06A6E /* marsvinsTests */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF3541D3AA35E00C06A6E /* marsvinsTests.m */,
+				F62CF3561D3AA35E00C06A6E /* Info.plist */,
+			);
+			path = marsvinsTests;
+			sourceTree = "<group>";
+		};
+		F62CF3621D3AA9E200C06A6E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		F62CF3631D3AA9EC00C06A6E /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF33D1D3AA35D00C06A6E /* AppDelegate.h */,
+				F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */,
+				F62CF3401D3AA35D00C06A6E /* InitialViewController.h */,
+				F62CF3411D3AA35D00C06A6E /* InitialViewController.m */,
+				F62CF35F1D3AA9D600C06A6E /* VinsViewController.h */,
+				F62CF3601D3AA9D600C06A6E /* VinsViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		F62CF3641D3AA9F600C06A6E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F62CF3431D3AA35D00C06A6E /* Main.storyboard */,
+				F62CF3461D3AA35D00C06A6E /* Assets.xcassets */,
+				F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F62CF3361D3AA35D00C06A6E /* marsvins */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F62CF3591D3AA35E00C06A6E /* Build configuration list for PBXNativeTarget "marsvins" */;
+			buildPhases = (
+				F62CF3331D3AA35D00C06A6E /* Sources */,
+				F62CF3341D3AA35D00C06A6E /* Frameworks */,
+				F62CF3351D3AA35D00C06A6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = marsvins;
+			productName = marsvins;
+			productReference = F62CF3371D3AA35D00C06A6E /* marsvins.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F62CF34F1D3AA35E00C06A6E /* marsvinsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F62CF35C1D3AA35E00C06A6E /* Build configuration list for PBXNativeTarget "marsvinsTests" */;
+			buildPhases = (
+				F62CF34C1D3AA35E00C06A6E /* Sources */,
+				F62CF34D1D3AA35E00C06A6E /* Frameworks */,
+				F62CF34E1D3AA35E00C06A6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F62CF3521D3AA35E00C06A6E /* PBXTargetDependency */,
+			);
+			name = marsvinsTests;
+			productName = marsvinsTests;
+			productReference = F62CF3501D3AA35E00C06A6E /* marsvinsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F62CF32F1D3AA35D00C06A6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = marslab;
+				TargetAttributes = {
+					F62CF3361D3AA35D00C06A6E = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = MJNV65U2X6;
+					};
+					F62CF34F1D3AA35E00C06A6E = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = F62CF3361D3AA35D00C06A6E;
+					};
+				};
+			};
+			buildConfigurationList = F62CF3321D3AA35D00C06A6E /* Build configuration list for PBXProject "marsvins" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F62CF32E1D3AA35D00C06A6E;
+			productRefGroup = F62CF3381D3AA35D00C06A6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F62CF3361D3AA35D00C06A6E /* marsvins */,
+				F62CF34F1D3AA35E00C06A6E /* marsvinsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F62CF3351D3AA35D00C06A6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F62CF34A1D3AA35D00C06A6E /* LaunchScreen.storyboard in Resources */,
+				F62CF3471D3AA35D00C06A6E /* Assets.xcassets in Resources */,
+				F62CF3451D3AA35D00C06A6E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F62CF34E1D3AA35E00C06A6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F62CF3331D3AA35D00C06A6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F62CF3421D3AA35D00C06A6E /* InitialViewController.m in Sources */,
+				F62CF33F1D3AA35D00C06A6E /* AppDelegate.m in Sources */,
+				F62CF3611D3AA9D600C06A6E /* VinsViewController.m in Sources */,
+				F62CF33C1D3AA35D00C06A6E /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F62CF34C1D3AA35E00C06A6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F62CF3551D3AA35E00C06A6E /* marsvinsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F62CF3521D3AA35E00C06A6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F62CF3361D3AA35D00C06A6E /* marsvins */;
+			targetProxy = F62CF3511D3AA35E00C06A6E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F62CF3431D3AA35D00C06A6E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F62CF3441D3AA35D00C06A6E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F62CF3491D3AA35D00C06A6E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F62CF3571D3AA35E00C06A6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F62CF3581D3AA35E00C06A6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F62CF35A1D3AA35E00C06A6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = marsvins/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umn.cs.mars.marsvins.marsvins;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		F62CF35B1D3AA35E00C06A6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = marsvins/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umn.cs.mars.marsvins.marsvins;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		F62CF35D1D3AA35E00C06A6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = marsvinsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umn.cs.mars.marsvins.marsvinsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/marsvins.app/marsvins";
+			};
+			name = Debug;
+		};
+		F62CF35E1D3AA35E00C06A6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = marsvinsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umn.cs.mars.marsvins.marsvinsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/marsvins.app/marsvins";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F62CF3321D3AA35D00C06A6E /* Build configuration list for PBXProject "marsvins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F62CF3571D3AA35E00C06A6E /* Debug */,
+				F62CF3581D3AA35E00C06A6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F62CF3591D3AA35E00C06A6E /* Build configuration list for PBXNativeTarget "marsvins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F62CF35A1D3AA35E00C06A6E /* Debug */,
+				F62CF35B1D3AA35E00C06A6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F62CF35C1D3AA35E00C06A6E /* Build configuration list for PBXNativeTarget "marsvinsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F62CF35D1D3AA35E00C06A6E /* Debug */,
+				F62CF35E1D3AA35E00C06A6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F62CF32F1D3AA35D00C06A6E /* Project object */;
+}
