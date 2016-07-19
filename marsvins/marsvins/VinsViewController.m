@@ -46,6 +46,9 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *zPositionGyro;
 
+//dynamic variable to track orientaion output view of camera
+@property (nonatomic) AVCaptureVideoPreviewLayer *previewInputLayer;
+
 @end
 
 @implementation VinsViewController
@@ -57,14 +60,32 @@ NSTimer *collectionInterval; //IMU time collection interval
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-        
+    
+    //IMU data set up
     self.manager = [[CMMotionManager alloc] init];
     dataPresenting = false;
     [self showIMULabels:dataPresenting];
     
     //begin camera session
+    self.imageCaptureSession = [[AVCaptureSession alloc] init];
     [self startCameraSession];
+    
+    //monitor orientation changes i.e. portrait vs landscape
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
 
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+    //discontinue orientation notifications on view once view disbanded
+    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIDeviceOrientationDidChangeNotification object:nil];
+    /*
+    [self.imageCaptureSession stopRunning];
+    [self.manager stopGyroUpdates];
+    [self.manager stopAccelerometerUpdates];
+     */
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -127,7 +148,6 @@ NSTimer *collectionInterval; //IMU time collection interval
 - (void)startCameraSession {
     
     //setup camera feed
-    self.imageCaptureSession = [[AVCaptureSession alloc] init];
     [self.imageCaptureSession setSessionPreset:AVCaptureSessionPreset640x480];
     
     //set up camera
@@ -144,13 +164,13 @@ NSTimer *collectionInterval; //IMU time collection interval
     
     // later probabaly use this for raw data frame : AVCaptureVideoDataOutput
     //setup display of image input
-    AVCaptureVideoPreviewLayer *previewInputLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.imageCaptureSession];
-    [previewInputLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+    self.previewInputLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.imageCaptureSession];
+    [self.previewInputLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     CALayer *root = [self.cameraView layer];
     [root setMasksToBounds:true];
     CGRect frame = [self.view frame];
-    [previewInputLayer setFrame:frame];
-    [root insertSublayer:previewInputLayer atIndex:0];
+    [self.previewInputLayer setFrame:frame];
+    [root insertSublayer:self.previewInputLayer atIndex:0];
     
     //setup output from camera input
     self.imageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -161,6 +181,31 @@ NSTimer *collectionInterval; //IMU time collection interval
     
     //begin session
     [self.imageCaptureSession startRunning];
+    
+}
+
+//handling orientation change
+//need to work on upsidedown capabilities (maybe)
+- (void)orientationChanged {
+    
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+    if (orientation == UIInterfaceOrientationPortrait) {
+        
+        [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
+        self.previewInputLayer.frame = self.view.bounds;
+        
+    } else if (orientation == UIInterfaceOrientationLandscapeLeft) {
+        
+        [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+        self.previewInputLayer.frame = self.view.bounds;
+        
+    } else if (orientation == UIInterfaceOrientationLandscapeRight) {
+        
+        [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+        self.previewInputLayer.frame = self.view.bounds;
+        
+    }
     
 }
 
