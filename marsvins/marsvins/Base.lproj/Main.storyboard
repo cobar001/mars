@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--marsvins-->
@@ -49,21 +48,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uIW-Nf-9xO">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esg-ay-gbu">
-                                        <rect key="frame" x="200" y="517" width="200" height="75"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="75" id="AHU-8e-faM"/>
-                                            <constraint firstAttribute="width" constant="200" id="qyh-Px-VtA"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" title="Show IMU data">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="showDataButtonPressed" destination="EUe-gn-4BJ" eventType="touchUpInside" id="QG4-Od-HJY"/>
-                                        </connections>
-                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Accelerometer:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-y7-9ij">
                                         <rect key="frame" x="8" y="90" width="584" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -119,7 +103,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Gyroscope:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DBD-9K-XY4">
-                                        <rect key="frame" x="8" y="206" width="584" height="21"/>
+                                        <rect key="frame" x="0.0" y="201" width="584" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -148,28 +132,43 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esg-ay-gbu">
+                                        <rect key="frame" x="200" y="517" width="200" height="75"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="WYA-Qm-hT0"/>
+                                            <constraint firstAttribute="height" constant="75" id="X02-jZ-bCs"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <state key="normal" title="Show IMU data">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="showDataButtonPressed" destination="EUe-gn-4BJ" eventType="touchUpInside" id="QG4-Od-HJY"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="1" blue="0.89623618225957058" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="esg-ay-gbu" firstAttribute="bottom" secondItem="uIW-Nf-9xO" secondAttribute="bottomMargin" id="AlA-v9-XOU"/>
-                                    <constraint firstItem="esg-ay-gbu" firstAttribute="centerX" secondItem="uIW-Nf-9xO" secondAttribute="centerX" id="OYC-mX-60o"/>
+                                    <constraint firstAttribute="bottom" secondItem="esg-ay-gbu" secondAttribute="bottom" constant="8" id="T1b-CT-ADQ"/>
+                                    <constraint firstItem="esg-ay-gbu" firstAttribute="centerX" secondItem="uIW-Nf-9xO" secondAttribute="centerX" id="nHU-Xh-Bza"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerY" secondItem="ui7-iZ-fsb" secondAttribute="centerY" id="AfP-8y-shk"/>
-                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="leading" secondItem="ui7-iZ-fsb" secondAttribute="leading" id="Nsg-Qg-84E"/>
-                            <constraint firstAttribute="trailing" secondItem="uIW-Nf-9xO" secondAttribute="trailing" id="dmm-lQ-ScS"/>
-                            <constraint firstItem="Nue-AU-50w" firstAttribute="top" secondItem="uIW-Nf-9xO" secondAttribute="bottom" id="oiL-lP-w1x"/>
-                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerX" secondItem="ui7-iZ-fsb" secondAttribute="centerX" id="puo-lG-Aor"/>
-                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="top" secondItem="ui7-iZ-fsb" secondAttribute="top" id="rHj-bb-a6c"/>
+                            <constraint firstItem="Nue-AU-50w" firstAttribute="top" secondItem="uIW-Nf-9xO" secondAttribute="bottom" id="XLS-Ef-U1E"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerX" secondItem="ui7-iZ-fsb" secondAttribute="centerX" id="ccy-MZ-FpT"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="leading" secondItem="ui7-iZ-fsb" secondAttribute="leading" id="kiY-rj-Wut"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="centerY" secondItem="ui7-iZ-fsb" secondAttribute="centerY" id="m07-Ol-t7O"/>
+                            <constraint firstItem="uIW-Nf-9xO" firstAttribute="top" secondItem="ui7-iZ-fsb" secondAttribute="top" id="oYH-vX-FzU"/>
+                            <constraint firstAttribute="trailing" secondItem="uIW-Nf-9xO" secondAttribute="trailing" id="zos-jv-p97"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="accelerometerTitleLabel" destination="iSs-y7-9ij" id="iuR-Jp-lI8"/>
-                        <outlet property="cameraView" destination="uIW-Nf-9xO" id="xzc-RX-fN6"/>
+                        <outlet property="cameraView" destination="uIW-Nf-9xO" id="ta1-Hu-2ht"/>
                         <outlet property="gyroscopeTitleLabel" destination="DBD-9K-XY4" id="BFV-wS-Kt3"/>
                         <outlet property="showDataButtonOutlet" destination="esg-ay-gbu" id="qY6-2J-fGo"/>
                         <outlet property="xPositionAcc" destination="R64-FX-SKd" id="iGV-gS-XgG"/>

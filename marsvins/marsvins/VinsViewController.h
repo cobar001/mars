@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VinsViewController : UIViewController <UIGestureRecognizerDelegate>
+
+@interface VinsViewController : UIViewController <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 
@@ -16,7 +17,7 @@
 
 @property (strong,nonatomic) AVCaptureSession *imageCaptureSession; //camera in
 
-@property (strong,nonatomic) AVCaptureStillImageOutput *imageOutput; //camera out
+@property (strong, nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
 
 - (void)startCameraSession;
 
