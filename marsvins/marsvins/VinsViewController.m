@@ -347,15 +347,25 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
     NSString *dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
-    NSString *dataPathImagesTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/Images/Timestamps"];
+    NSString *dataPathImagesTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/Images/timestamps.txt"];
     NSString *dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
+    NSString *dataPathIMUTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/IMU/timestamps.txt"];
     
-    //use these three declarations to create folders at each viewDidLoad, essentially starting over each time
+    //use these declarations to create folders at each viewDidLoad, essentially starting over each time
+    
+    //delete contents each time for testing sake
+    [[NSFileManager defaultManager] removeItemAtPath:dataPathImages error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:dataPathIMU error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:dataPathImagesTimeStamps error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:dataPathIMUTimeStamps error:nil];
+
     [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImages withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images folder
     
-    [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImagesTimeStamps withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images/ImagesTimeStamps folder
-    
     [[NSFileManager defaultManager] createDirectoryAtPath:dataPathIMU withIntermediateDirectories:NO attributes:nil error:&error]; //Create IMU folder
+    
+    [[NSFileManager defaultManager] createFileAtPath:dataPathImagesTimeStamps contents:nil attributes:nil]; //Create Images/timestamps.txt textfile
+    
+    [[NSFileManager defaultManager] createFileAtPath:dataPathIMUTimeStamps contents:nil attributes:nil]; //Create IMU/timestamps.txt textfile
     
     /* when saving files for multiple sessions
     if (![[NSFileManager defaultManager] fileExistsAtPath:dataPathImages]) {
