@@ -20,6 +20,7 @@
 		F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */; };
 		F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */; };
 		F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */; };
+		F6FB5C521D42C3E400F62F96 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6FB5C521D42C3E400F62F96 /* CoreLocation.framework in Frameworks */,
 				F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */,
 				F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */,
 				F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */,
@@ -159,6 +162,7 @@
 		F62CF3691D3ABDD700C06A6E /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */,
 				F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */,
 				F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */,
 				F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */,

@@ -11,6 +11,10 @@
 #import <CoreMotion/CoreMotion.h>
 #import "VinsViewController.h"
 
+#define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
+#define GRAVITY ((double) 9.80781) //minneapolis specific, working on implementing CoreLocation for dynamics
+#define IMU_COLLECTION_INTERVAL ((double) 0.01) //100Hz
+
 @interface VinsViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 //strictly UI static labels
@@ -51,23 +55,25 @@
 
 @property (nonatomic) UIDeviceOrientation orientation;
 
-//@property (nonatomic) dispatch_queue_t queue;
-
 @end
 
-@implementation VinsViewController {
+@implementation VinsViewController
 
-    //UI/timing global setup
-    Boolean dataPresenting;
-    NSTimer *collectionInterval; //IMU time collection interval
+//UI/timing global setup
+Boolean dataPresenting;
+NSTimer *collectionInterval; //IMU time collection interval
+int frameCounter;
+
     
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     dataPresenting = false;
+    
+    //create necessary subdirectories if not already present
+    [self subDirectorySetup];
     
     //set orientation
     self.orientation = [[UIDevice currentDevice] orientation];
@@ -76,6 +82,16 @@
     self.manager = [[CMMotionManager alloc] init];
     dataPresenting = false;
     [self showIMULabels:dataPresenting];
+    
+    //set up IMU collection intervals
+    self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+    [self.manager startAccelerometerUpdates];
+    
+    self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+    [self.manager startGyroUpdates];
+    
+    //CMMotionManager initiation
+    collectionInterval = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(getIMUValues:) userInfo:nil repeats:true];
     
     //begin camera session
     [self startCameraSession];
@@ -91,6 +107,8 @@
 - (void)viewDidDisappear:(BOOL)animated {
     
     [self.imageCaptureSession stopRunning];
+    [collectionInterval invalidate];
+    collectionInterval = nil;
     
 }
 
@@ -127,21 +145,9 @@
         //UI button update
         [self.showDataButtonOutlet setTitle:@"Stop/Hide data" forState:UIControlStateNormal];
         
-        //CMMotionManager initiation
-        collectionInterval = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(getIMUValues:) userInfo:nil repeats:true];
-        
-        self.manager.accelerometerUpdateInterval = 0.05;  // 20 Hz
-        [self.manager startAccelerometerUpdates];
-        
-        self.manager.gyroUpdateInterval = 0.05;  // 20 Hz
-        [self.manager startGyroUpdates];
-        
         dataPresenting = true;
         
     } else {
-        
-        [collectionInterval invalidate];
-        collectionInterval = nil;
         
         [self.showDataButtonOutlet setTitle:@"Show IMU data" forState:UIControlStateNormal];
         
@@ -190,10 +196,14 @@
     
     // If you wish to cap the frame rate to a known value, such as 15 fps, set
     // minFrameDuration.
-    //output.minFrameDuration = CMTimeMake(1, 15);
+    [device lockForConfiguration:nil];
+    device.activeVideoMinFrameDuration = CMTimeMake(1, 15);
+    [device unlockForConfiguration];
+    
+    //discard frames if processor running behind
+    [self.imageOutput setAlwaysDiscardsLateVideoFrames:true];
     
     // Start the session running to start the flow of data
-    NSLog(@"here");
     [self.imageCaptureSession startRunning];
 
 }
@@ -260,10 +270,29 @@
     
     // Create a UIImage from the sample buffer data
     //UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-    NSLog(@"delegate method called");
-
-    //< Add your code here that uses the image >
+    //NSLog(@"image processed %@", image.description);
+    //Get a CMSampleBuffer's core video image buffer forthe media data
     
+    frameCounter += 1;
+    
+    //NSLog(@"m%@ - %@", [NSString stringWithFormat:@"%07d", frameCounter], TIMESTAMP);
+    
+}
+
+NSData* imageToBuffer(CMSampleBufferRef source) {
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(source);
+    CVPixelBufferLockBaseAddress(imageBuffer,0);
+    
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    //size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    void *src_buff = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    NSData *data = [NSData dataWithBytes:src_buff length:bytesPerRow * height];
+    
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    
+    return data;
 }
 
 //Create UIImage from sample buffer
@@ -311,17 +340,58 @@
     
 }
 
+- (void)subDirectorySetup {
+    
+    //create subdirectories in Documents, Documents/Images && Documents/IMU && Documents/Images/ImagesTimeStamps, to hold captured images and imu
+    NSError *error;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+    NSString *dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
+    NSString *dataPathImagesTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/Images/Timestamps"];
+    NSString *dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
+    
+    //use these three declarations to create folders at each viewDidLoad, essentially starting over each time
+    [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImages withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images folder
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImagesTimeStamps withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images/ImagesTimeStamps folder
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:dataPathIMU withIntermediateDirectories:NO attributes:nil error:&error]; //Create IMU folder
+    
+    /* when saving files for multiple sessions
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPathImages]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImages withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images folder
+    }
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPathImagesTimeStamps]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImagesTimeStamps withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images/ImagesTimeStamps folder
+    }
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPathIMU]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPathIMU withIntermediateDirectories:NO attributes:nil error:&error]; //Create IMU folder
+    }
+    */
+    
+}
+
 - (void)getIMUValues:(NSTimer *)timer {
     
+    double accelDatax = self.manager.accelerometerData.acceleration.x * GRAVITY;
+    double accelDatay = self.manager.accelerometerData.acceleration.y * GRAVITY;
+    double accelDataz = self.manager.accelerometerData.acceleration.z * GRAVITY;
+    
+    double gyroDatax = self.manager.gyroData.rotationRate.x;
+    double gyroDatay = self.manager.gyroData.rotationRate.y;
+    double gyroDataz = self.manager.gyroData.rotationRate.z;
+    
     //accelerometer to two decimal points
-    self.xPositionAcc.text = [NSString stringWithFormat:@"%.4f",self.manager.accelerometerData.acceleration.x * 9.8];
-    self.yPositionAcc.text = [NSString stringWithFormat:@"%.4f",self.manager.accelerometerData.acceleration.y * 9.8];
-    self.zPositionAcc.text = [NSString stringWithFormat:@"%.4f",self.manager.accelerometerData.acceleration.z * 9.8];
+    self.xPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatax];
+    self.yPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatay];
+    self.zPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDataz];
     
     //gyroscope to two decimal points
-    self.xPositionGyro.text = [NSString stringWithFormat:@"%.4f",self.manager.gyroData.rotationRate.x];
-    self.yPositionGyro.text = [NSString stringWithFormat:@"%.4f",self.manager.gyroData.rotationRate.y];
-    self.zPositionGyro.text = [NSString stringWithFormat:@"%.4f",self.manager.gyroData.rotationRate.z];
+    self.xPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatax];
+    self.yPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatay];
+    self.zPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDataz];
+    
+    NSLog(@"%@ - gyro %f %f %f accel %f %f %f", TIMESTAMP, gyroDatax, gyroDatay, gyroDataz, accelDatax, accelDatay, accelDataz);
     
 }
 
