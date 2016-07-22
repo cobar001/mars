@@ -18,6 +18,8 @@
 		F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */; };
 		F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */; };
 		F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */; };
+		F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */; };
+		F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */,
+				F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */,
 				F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */,
 				F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */,
 				F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */,
@@ -153,6 +159,8 @@
 		F62CF3691D3ABDD700C06A6E /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */,
+				F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */,
 				F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */,
 				F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */,
 				F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */,
@@ -461,6 +469,7 @@
 				F62CF35B1D3AA35E00C06A6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F62CF35C1D3AA35E00C06A6E /* Build configuration list for PBXNativeTarget "marsvinsTests" */ = {
 			isa = XCConfigurationList;
@@ -469,6 +478,7 @@
 				F62CF35E1D3AA35E00C06A6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

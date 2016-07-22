@@ -51,7 +51,7 @@
 
 @property (nonatomic) UIDeviceOrientation orientation;
 
-@property (nonatomic) dispatch_queue_t queue;
+//@property (nonatomic) dispatch_queue_t queue;
 
 @end
 
@@ -78,8 +78,9 @@
     [self showIMULabels:dataPresenting];
     
     //begin camera session
-     self.imageCaptureSession = [AVCaptureSession new];
     [self startCameraSession];
+    
+    [self setupPreviewLayer];
     
     //monitor orientation changes i.e. portrait vs landscape
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -88,9 +89,6 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    
-    //discontinue orientation notifications on view once view disbanded
-    [[NSNotificationCenter defaultCenter] removeObserver:self name: UIDeviceOrientationDidChangeNotification object:nil];
     
     [self.imageCaptureSession stopRunning];
     
@@ -157,79 +155,47 @@
 
 - (void)startCameraSession {
     
-    //input
-    [self setupInputDevice];
+    NSError *error = nil;
     
-    //output
-    [self setupOutputConfigurations];
+    // Create the session
+    self.imageCaptureSession = [[AVCaptureSession alloc] init];
     
-    //view preview
-    [self setupPreviewLayer];
-    
-    dispatch_async(self.queue, ^{
-        NSLog(@"here");
-        [self.imageCaptureSession startRunning];
-    });
-
-    NSLog(@"capture session inputs: %@", [self.imageCaptureSession inputs]);
-    NSLog(@"capture session outputs: %@", [self.imageCaptureSession outputs]);
-
-}
-
-- (void)setupInputDevice {
-    
-    //setup camera output res
+    // Configure the session to produce lower resolution video frames, if your
+    // processing algorithm can cope. We'll specify medium quality for the
+    // chosen device.
     [self.imageCaptureSession setSessionPreset:AVCaptureSessionPreset640x480];
     
-    //set up camera
-    AVCaptureDevice *capDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    NSError *error;
-    AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:capDevice error:&error];
+    // Find a suitable AVCaptureDevice
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
-    //set framerate (currently 15fps ~ 30hz)
-    [capDevice lockForConfiguration:&error];
-    capDevice.activeVideoMinFrameDuration = CMTimeMake(1,30);
-    [capDevice unlockForConfiguration];
+    // Create a device input with the device and add it to the session.
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
-    //making sure device is available
-    if ([self.imageCaptureSession canAddInput:deviceInput]) {
-        
-        [self.imageCaptureSession addInput:deviceInput];
-        
-    } else {
-        
-        NSLog(@"Couldn't add video input device");
-        
+    if (!input) {
+        // Handling the error appropriately.
     }
     
-}
-
-- (void)setupOutputConfigurations {
+    [self.imageCaptureSession addInput:input];
     
-    //setup output from camera input (need extra raw)
+    // Create a VideoDataOutput and add it to the session
     self.imageOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [self.imageCaptureSession addOutput:self.imageOutput];
     
-    // discard if the data output queue is blocked (as we process the still image)
-    [self.imageOutput setAlwaysDiscardsLateVideoFrames:true];
+    // Configure your output.
+    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+    [self.imageOutput setSampleBufferDelegate:self queue:queue];
     
-    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
-    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-    // see the header doc for setSampleBufferDelegate:queue: for more information
-    self.queue = dispatch_queue_create("myQueue", DISPATCH_QUEUE_SERIAL);
-    [self.imageOutput setSampleBufferDelegate:self queue:self.queue];
+    // Specify the pixel format
+    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     
-    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    // If you wish to cap the frame rate to a known value, such as 15 fps, set
+    // minFrameDuration.
+    //output.minFrameDuration = CMTimeMake(1, 15);
     
-    if ([self.imageCaptureSession canAddOutput:self.imageOutput]) {
-        
-        [self.imageCaptureSession addOutput:self.imageOutput];
-        
-    } else {
-        
-        NSLog(@"Couldn't add video output");
-        
-    }
-    
+    // Start the session running to start the flow of data
+    NSLog(@"here");
+    [self.imageCaptureSession startRunning];
+
 }
 
 - (void)setupPreviewLayer {
@@ -289,9 +255,14 @@
     
 }
 
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+// Delegate routine that is called when a sample buffer was written
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     
+    // Create a UIImage from the sample buffer data
+    //UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
     NSLog(@"delegate method called");
+
+    //< Add your code here that uses the image >
     
 }
 
