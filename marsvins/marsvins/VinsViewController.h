@@ -13,11 +13,11 @@
 
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 
-@property (strong,nonatomic) CMMotionManager *manager; //IMU
+@property (nonatomic) CMMotionManager *manager; //IMU
 
-@property (strong,nonatomic) AVCaptureSession *imageCaptureSession; //camera in
+@property (nonatomic) AVCaptureSession *imageCaptureSession; //camera in
 
-@property (strong, nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
+@property (nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
 
 - (void)startCameraSession;
 

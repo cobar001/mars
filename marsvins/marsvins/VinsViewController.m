@@ -51,17 +51,23 @@
 
 @property (nonatomic) UIDeviceOrientation orientation;
 
+@property (nonatomic) dispatch_queue_t queue;
+
 @end
 
-@implementation VinsViewController
+@implementation VinsViewController {
 
-//UI/timing global setup
-Boolean dataPresenting = false;
-NSTimer *collectionInterval; //IMU time collection interval
+    //UI/timing global setup
+    Boolean dataPresenting;
+    NSTimer *collectionInterval; //IMU time collection interval
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    dataPresenting = false;
     
     //set orientation
     self.orientation = [[UIDevice currentDevice] orientation];
@@ -72,9 +78,8 @@ NSTimer *collectionInterval; //IMU time collection interval
     [self showIMULabels:dataPresenting];
     
     //begin camera session
-    self.imageCaptureSession = [[AVCaptureSession alloc] init];
+     self.imageCaptureSession = [AVCaptureSession new];
     [self startCameraSession];
-    
     
     //monitor orientation changes i.e. portrait vs landscape
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -112,7 +117,9 @@ NSTimer *collectionInterval; //IMU time collection interval
 
 //conform to UIGesturerecognizerDelegate for back swipe and no nav
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
     return YES;
+    
 }
 
 - (IBAction)showDataButtonPressed {
@@ -150,7 +157,26 @@ NSTimer *collectionInterval; //IMU time collection interval
 
 - (void)startCameraSession {
     
-    //UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    //input
+    [self setupInputDevice];
+    
+    //output
+    [self setupOutputConfigurations];
+    
+    //view preview
+    [self setupPreviewLayer];
+    
+    dispatch_async(self.queue, ^{
+        NSLog(@"here");
+        [self.imageCaptureSession startRunning];
+    });
+
+    NSLog(@"capture session inputs: %@", [self.imageCaptureSession inputs]);
+    NSLog(@"capture session outputs: %@", [self.imageCaptureSession outputs]);
+
+}
+
+- (void)setupInputDevice {
     
     //setup camera output res
     [self.imageCaptureSession setSessionPreset:AVCaptureSessionPreset640x480];
@@ -159,6 +185,11 @@ NSTimer *collectionInterval; //IMU time collection interval
     AVCaptureDevice *capDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     NSError *error;
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:capDevice error:&error];
+    
+    //set framerate (currently 15fps ~ 30hz)
+    [capDevice lockForConfiguration:&error];
+    capDevice.activeVideoMinFrameDuration = CMTimeMake(1,30);
+    [capDevice unlockForConfiguration];
     
     //making sure device is available
     if ([self.imageCaptureSession canAddInput:deviceInput]) {
@@ -171,10 +202,37 @@ NSTimer *collectionInterval; //IMU time collection interval
         
     }
     
-    //set framerate (currently 15fps ~ 30hz)
-    [capDevice lockForConfiguration:&error];
-    capDevice.activeVideoMinFrameDuration = CMTimeMake(1,30);
-    [capDevice unlockForConfiguration];
+}
+
+- (void)setupOutputConfigurations {
+    
+    //setup output from camera input (need extra raw)
+    self.imageOutput = [[AVCaptureVideoDataOutput alloc] init];
+    
+    // discard if the data output queue is blocked (as we process the still image)
+    [self.imageOutput setAlwaysDiscardsLateVideoFrames:true];
+    
+    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
+    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
+    // see the header doc for setSampleBufferDelegate:queue: for more information
+    self.queue = dispatch_queue_create("myQueue", DISPATCH_QUEUE_SERIAL);
+    [self.imageOutput setSampleBufferDelegate:self queue:self.queue];
+    
+    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    
+    if ([self.imageCaptureSession canAddOutput:self.imageOutput]) {
+        
+        [self.imageCaptureSession addOutput:self.imageOutput];
+        
+    } else {
+        
+        NSLog(@"Couldn't add video output");
+        
+    }
+    
+}
+
+- (void)setupPreviewLayer {
     
     //setup display of image display to user
     self.previewInputLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.imageCaptureSession];
@@ -203,69 +261,6 @@ NSTimer *collectionInterval; //IMU time collection interval
     [self.previewInputLayer setFrame:frame];
     [root insertSublayer:self.previewInputLayer atIndex:0];
     
-    //setup output from camera input (need extra raw)
-    //self.imageOutput = [[AVCaptureStillImageOutput alloc] init];
-    self.imageOutput = [[AVCaptureVideoDataOutput alloc] init];
-    
-    // discard if the data output queue is blocked (as we process the still image)
-    //[self.imageOutput setAlwaysDiscardsLateVideoFrames:true];
-    
-    //NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
-    
-    NSDictionary *outputSettings = @{ (NSString *) kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
-    self.imageOutput.videoSettings = outputSettings;
-    
-    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
-    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-    // see the header doc for setSampleBufferDelegate:queue: for more information
-    [self.imageOutput setSampleBufferDelegate:self queue:dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL)];
-    
-    if ([self.imageCaptureSession canAddOutput:self.imageOutput]) {
-        
-        [self.imageCaptureSession addOutput:self.imageOutput];
-        
-    } else {
-        
-        NSLog(@"Couldn't add video output");
-        
-    }
-    
-    //allow still image capturing
-    AVCaptureStillImageOutput *stillImageOut = [[AVCaptureStillImageOutput alloc] init];
-    
-    if ([self.imageCaptureSession canAddOutput:stillImageOut]) {
-        
-        [self.imageCaptureSession addOutput:stillImageOut];
-        
-    } else {
-        
-        NSLog(@"Couldn't add still image output");
-
-        
-    }
-    
-    //begin session
-    dispatch_queue_t sessionQueue = dispatch_queue_create("capsesh", DISPATCH_QUEUE_SERIAL);
-    dispatch_async(sessionQueue, ^(void) {
-       
-        [self.imageCaptureSession startRunning];
-        
-    });
-    //[self.imageCaptureSession startRunning];
-    
-}
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    
-    /*
-    CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CVPixelBufferLockBaseAddress(cameraFrame, 0);
-    GLubyte *rawImageBytes = CVPixelBufferGetBaseAddress(cameraFrame);
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(cameraFrame);
-    NSData *dataForRawBytes = [NSData dataWithBytes:rawImageBytes length:bytesPerRow * CVPixelBufferGetHeight(cameraFrame)];
-    NSLog(@"%@", dataForRawBytes.description);
-     */
-    
 }
 
 //handling orientation change
@@ -291,6 +286,57 @@ NSTimer *collectionInterval; //IMU time collection interval
         self.previewInputLayer.frame = self.cameraView.bounds;
         
     }
+    
+}
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    
+    NSLog(@"delegate method called");
+    
+}
+
+//Create UIImage from sample buffer
+- (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer {
+    
+    //Get a CMSampleBuffer's core video image buffer forthe media data
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    //Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    //Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    //Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    
+    //Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    //Create device dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    //Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Create an image object from the Quartz image
+    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    return image;
     
 }
 
