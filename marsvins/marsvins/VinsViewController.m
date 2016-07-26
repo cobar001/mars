@@ -13,7 +13,7 @@
 
 #define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
 #define GRAVITY ((double) 9.80781) //minneapolis specific, working on implementing CoreLocation for dynamics
-#define IMU_COLLECTION_INTERVAL ((double) 0.01) //100Hz
+#define IMU_COLLECTION_INTERVAL ((double) 0.01) //10Hz
 
 @interface VinsViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -64,17 +64,38 @@ Boolean dataPresenting;
 NSTimer *collectionInterval; //IMU time collection interval
 int frameCounter;
 
-    
+//directories to be used
+NSArray *paths;
+NSString *documentsDirectory;
+NSString *dataPathImages;
+NSString *dataPathImagesTimeStamps;
+NSString *dataPathIMU;
+NSString *dataPathIMUTimeStamps;
+//NSFileHandle *fileHandlerImages; not necessary at the moment
+NSFileHandle *fileHandlerImagesTimeStamps;
+//NSFileHandle *fileHandlerIMU; not necessary at the moment
+NSFileHandle *fileHandlerIMUTimeStamps;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
+    //class global setup
     dataPresenting = false;
+    frameCounter = 0;
+    paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+    dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
+    dataPathImagesTimeStamps = [dataPathImages stringByAppendingPathComponent:@"/imageTimestamps.txt"];
+    dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
+    dataPathIMUTimeStamps = [dataPathIMU stringByAppendingPathComponent:@"/imuTimestamps.txt"];
+    
+    //disable extra camera features (see function for more detail)
+    [self disableAutoFocus];
     
     //create necessary subdirectories if not already present
     [self subDirectorySetup];
-    
+
     //set orientation
     self.orientation = [[UIDevice currentDevice] orientation];
     
@@ -84,18 +105,17 @@ int frameCounter;
     [self showIMULabels:dataPresenting];
     
     //set up IMU collection intervals
-    self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+    self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 10 Hz
     [self.manager startAccelerometerUpdates];
     
-    self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+    self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 10 Hz
     [self.manager startGyroUpdates];
     
     //CMMotionManager initiation
-    collectionInterval = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(getIMUValues:) userInfo:nil repeats:true];
+    collectionInterval = [NSTimer scheduledTimerWithTimeInterval:IMU_COLLECTION_INTERVAL target:self selector:@selector(getIMUValues:) userInfo:nil repeats:true]; //100 Hz
     
     //begin camera session
     [self startCameraSession];
-    
     [self setupPreviewLayer];
     
     //monitor orientation changes i.e. portrait vs landscape
@@ -192,12 +212,13 @@ int frameCounter;
     [self.imageOutput setSampleBufferDelegate:self queue:queue];
     
     // Specify the pixel format
-    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    //self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    //self.imageOutput.videoSettings = nil;
+    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     
-    // If you wish to cap the frame rate to a known value, such as 15 fps, set
-    // minFrameDuration.
+    // set frame rate to ~15fps
     [device lockForConfiguration:nil];
-    device.activeVideoMinFrameDuration = CMTimeMake(1, 15);
+    device.activeVideoMinFrameDuration = CMTimeMake(1, 30);
     [device unlockForConfiguration];
     
     //discard frames if processor running behind
@@ -205,7 +226,7 @@ int frameCounter;
     
     // Start the session running to start the flow of data
     [self.imageCaptureSession startRunning];
-
+    
 }
 
 - (void)setupPreviewLayer {
@@ -250,17 +271,20 @@ int frameCounter;
         
         [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
         self.previewInputLayer.frame = self.cameraView.bounds;
+        [self.previewInputLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
         
     } else if (self.orientation == UIInterfaceOrientationLandscapeLeft) {
         
         [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
         self.previewInputLayer.frame = self.cameraView.bounds;
+        [self.previewInputLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
         
     } else if (self.orientation == UIInterfaceOrientationLandscapeRight) {
         
         [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         self.previewInputLayer.frame = self.cameraView.bounds;
-        
+        [self.previewInputLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+
     }
     
 }
@@ -268,18 +292,36 @@ int frameCounter;
 // Delegate routine that is called when a sample buffer was written
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     
-    // Create a UIImage from the sample buffer data
-    //UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-    //NSLog(@"image processed %@", image.description);
-    //Get a CMSampleBuffer's core video image buffer forthe media data
+    //NSError *error;
+    
+    //writing image data to file
+    NSString *frameName = [NSString stringWithFormat:@"m%07d.bgra", frameCounter];
+    
+    //write pixel data to directory
+    NSData *rawPixelData = [self frameToBuffer:sampleBuffer];
+
+    NSString *pathImage = [dataPathImages stringByAppendingString: [NSString stringWithFormat:@"/%@", frameName]];
+    //[rawPixelData writeToFile:pathImage atomically:true];
+    
+    //writing data to file more efficiently
+    NSData *textToFIle = [[NSString stringWithFormat:@"%@ %@\n", frameName, TIMESTAMP] dataUsingEncoding:NSUTF8StringEncoding];
+    [fileHandlerImagesTimeStamps writeData:textToFIle];
+    
+    /*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        // Save it into file system
+        [rawPixelData writeToFile:pathImage atomically:true];
+        
+    });
+    */
     
     frameCounter += 1;
     
-    //NSLog(@"m%@ - %@", [NSString stringWithFormat:@"%07d", frameCounter], TIMESTAMP);
-    
 }
 
-NSData* imageToBuffer(CMSampleBufferRef source) {
+- (NSData *) frameToBuffer: (CMSampleBufferRef)source {
+    
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(source);
     CVPixelBufferLockBaseAddress(imageBuffer,0);
     
@@ -287,12 +329,55 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     //size_t width = CVPixelBufferGetWidth(imageBuffer);
     size_t height = CVPixelBufferGetHeight(imageBuffer);
     void *src_buff = CVPixelBufferGetBaseAddress(imageBuffer);
-    
+
     NSData *data = [NSData dataWithBytes:src_buff length:bytesPerRow * height];
     
     CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
     
     return data;
+    
+    /*
+    //Get a CMSampleBuffer's core video image buffer from the media data
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(source);
+    
+    //Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    //Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    //Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    
+    //Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    //Create device dependent RGB color space
+    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    //Create a bitmap graphics reference context with the sample buffer data
+    //CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    
+    ////Create device dependent gray color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGImageAlphaNone);
+    
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    
+    //cgimageref to data for storage
+    NSData *data = [NSData dataWithBytes:quartzImage length: bytesPerRow * height];
+    
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    
+    NSLog(@"%@", data);
+    
+    return data;
+    
+    */
 }
 
 //Create UIImage from sample buffer
@@ -337,19 +422,21 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     CGImageRelease(quartzImage);
     
     return image;
-    
+
 }
 
 - (void)subDirectorySetup {
     
     //create subdirectories in Documents, Documents/Images && Documents/IMU && Documents/Images/ImagesTimeStamps, to hold captured images and imu
     NSError *error;
+    /*
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
     NSString *dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
     NSString *dataPathImagesTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/Images/timestamps.txt"];
     NSString *dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
     NSString *dataPathIMUTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/IMU/timestamps.txt"];
+     */
     
     //use these declarations to create folders at each viewDidLoad, essentially starting over each time
     
@@ -358,7 +445,7 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     [[NSFileManager defaultManager] removeItemAtPath:dataPathIMU error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:dataPathImagesTimeStamps error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:dataPathIMUTimeStamps error:nil];
-
+    
     [[NSFileManager defaultManager] createDirectoryAtPath:dataPathImages withIntermediateDirectories:NO attributes:nil error:&error]; //Create Images folder
     
     [[NSFileManager defaultManager] createDirectoryAtPath:dataPathIMU withIntermediateDirectories:NO attributes:nil error:&error]; //Create IMU folder
@@ -366,6 +453,11 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     [[NSFileManager defaultManager] createFileAtPath:dataPathImagesTimeStamps contents:nil attributes:nil]; //Create Images/timestamps.txt textfile
     
     [[NSFileManager defaultManager] createFileAtPath:dataPathIMUTimeStamps contents:nil attributes:nil]; //Create IMU/timestamps.txt textfile
+    
+    //fileHandlerImages = [NSFileHandle fileHandleForWritingAtPath:dataPathImages];
+    fileHandlerImagesTimeStamps = [NSFileHandle fileHandleForWritingAtPath:dataPathImagesTimeStamps];
+    //fileHandlerIMU = [NSFileHandle fileHandleForWritingAtPath:dataPathIMU];
+    fileHandlerIMUTimeStamps = [NSFileHandle fileHandleForWritingAtPath:dataPathIMUTimeStamps];
     
     /* when saving files for multiple sessions
     if (![[NSFileManager defaultManager] fileExistsAtPath:dataPathImages]) {
@@ -390,8 +482,10 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     double gyroDatax = self.manager.gyroData.rotationRate.x;
     double gyroDatay = self.manager.gyroData.rotationRate.y;
     double gyroDataz = self.manager.gyroData.rotationRate.z;
+
     
     //accelerometer to two decimal points
+    /*
     self.xPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatax];
     self.yPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatay];
     self.zPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDataz];
@@ -400,8 +494,18 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     self.xPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatax];
     self.yPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatay];
     self.zPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDataz];
+     */
     
-    NSLog(@"%@ - gyro %f %f %f accel %f %f %f", TIMESTAMP, gyroDatax, gyroDatay, gyroDataz, accelDatax, accelDatay, accelDataz);
+    //writing data to file more efficiently
+    
+    NSData *textToFIle = [[NSString stringWithFormat:@"%@ - gyro %f %f %f accel %f %f %f\n", TIMESTAMP, gyroDatax, gyroDatay, gyroDataz, accelDatax, accelDatay, accelDataz] dataUsingEncoding:NSUTF8StringEncoding];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        //[fileHandlerIMUTimeStamps writeData:textToFIle];
+        
+    });
+    
     
 }
 
@@ -425,6 +529,35 @@ NSData* imageToBuffer(CMSampleBufferRef source) {
     [self.xPositionGyro setHidden:!areShowing];
     [self.yPositionGyro setHidden:!areShowing];
     [self.zPositionGyro setHidden:!areShowing];
+    
+}
+
+//disabling extra camera capabilities (autofocus, flash, and torch)
+-(void)disableAutoFocus {
+    
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [device lockForConfiguration:nil];
+    [device setTorchMode:AVCaptureTorchModeOff];
+    [device setFlashMode:AVCaptureFlashModeOff];
+    
+    NSArray *devices = [AVCaptureDevice devices];
+    NSError *error;
+    for (AVCaptureDevice *device in devices) {
+        
+        if (([device hasMediaType:AVMediaTypeVideo]) && ([device position] == AVCaptureDevicePositionBack) ) {
+            
+            [device lockForConfiguration:&error];
+            if ([device isFocusModeSupported:AVCaptureFocusModeLocked]) {
+                
+                device.focusMode = AVCaptureFocusModeLocked;
+                
+            }
+            
+            [device unlockForConfiguration];
+            
+        }
+        
+    }
     
 }
 
