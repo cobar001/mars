@@ -14,6 +14,7 @@
 #define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
 #define GRAVITY ((double) 9.80781) //minneapolis specific, working on implementing CoreLocation for dynamics
 #define IMU_COLLECTION_INTERVAL ((double) 0.01) //10Hz
+#define PGM_HEADING640x480 @"P5\n640 480\n255\n"
 
 @interface VinsViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -71,11 +72,13 @@ NSString *dataPathImages;
 NSString *dataPathImagesTimeStamps;
 NSString *dataPathIMU;
 NSString *dataPathIMUTimeStamps;
-//NSFileHandle *fileHandlerImages; not necessary at the moment
+NSFileHandle *fileHandlerImages;
 NSFileHandle *fileHandlerImagesTimeStamps;
 //NSFileHandle *fileHandlerIMU; not necessary at the moment
 NSFileHandle *fileHandlerIMUTimeStamps;
 
+//frame buffer size
+size_t bufferSize;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -105,10 +108,10 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     [self showIMULabels:dataPresenting];
     
     //set up IMU collection intervals
-    self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 10 Hz
+    self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
     [self.manager startAccelerometerUpdates];
     
-    self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 10 Hz
+    self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
     [self.manager startGyroUpdates];
     
     //CMMotionManager initiation
@@ -199,6 +202,7 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     
     if (!input) {
         // Handling the error appropriately.
+        NSLog(@"%@", error);
     }
     
     [self.imageCaptureSession addInput:input];
@@ -213,10 +217,9 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     
     // Specify the pixel format
     //self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-    //self.imageOutput.videoSettings = nil;
     self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     
-    // set frame rate to ~15fps
+    // set frame rate to ~30fps
     [device lockForConfiguration:nil];
     device.activeVideoMinFrameDuration = CMTimeMake(1, 30);
     [device unlockForConfiguration];
@@ -261,7 +264,6 @@ NSFileHandle *fileHandlerIMUTimeStamps;
 }
 
 //handling orientation change
-//need to work on upsidedown capabilities (maybe)
 - (void)orientationChanged {
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
@@ -292,151 +294,38 @@ NSFileHandle *fileHandlerIMUTimeStamps;
 // Delegate routine that is called when a sample buffer was written
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     
-    //NSError *error;
+    NSString *filePath = [NSString stringWithFormat:@"%@/m%07d.pgm", dataPathImages, frameCounter];
     
-    //writing image data to file
-    NSString *frameName = [NSString stringWithFormat:@"m%07d.bgra", frameCounter];
+    [[NSFileManager defaultManager] createFileAtPath:filePath contents:[PGM_HEADING640x480 dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
     
-    //write pixel data to directory
-    NSData *rawPixelData = [self frameToBuffer:sampleBuffer];
-
-    NSString *pathImage = [dataPathImages stringByAppendingString: [NSString stringWithFormat:@"/%@", frameName]];
-    //[rawPixelData writeToFile:pathImage atomically:true];
+    fileHandlerImages = [NSFileHandle fileHandleForWritingAtPath:filePath];
     
-    //writing data to file more efficiently
-    NSData *textToFIle = [[NSString stringWithFormat:@"%@ %@\n", frameName, TIMESTAMP] dataUsingEncoding:NSUTF8StringEncoding];
-    [fileHandlerImagesTimeStamps writeData:textToFIle];
+    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     
-    /*
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        
-        // Save it into file system
-        [rawPixelData writeToFile:pathImage atomically:true];
-        
-    });
-    */
+    size_t bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
+    //size_t bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+    bufferSize = bufferHeight * bytesPerRow;
+    
+    unsigned char *rowBase = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
+    
+    NSData *data = [NSData dataWithBytes:rowBase length:bufferSize];
+    
+    [fileHandlerImages seekToEndOfFile];
+    [fileHandlerImages writeData:data];
+    [fileHandlerImages closeFile];
+    
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     
     frameCounter += 1;
     
 }
 
-- (NSData *) frameToBuffer: (CMSampleBufferRef)source {
-    
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(source);
-    CVPixelBufferLockBaseAddress(imageBuffer,0);
-    
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    //size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    void *src_buff = CVPixelBufferGetBaseAddress(imageBuffer);
-
-    NSData *data = [NSData dataWithBytes:src_buff length:bytesPerRow * height];
-    
-    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-    
-    return data;
-    
-    /*
-    //Get a CMSampleBuffer's core video image buffer from the media data
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(source);
-    
-    //Lock the base address of the pixel buffer
-    CVPixelBufferLockBaseAddress(imageBuffer, 0);
-    
-    //Get the number of bytes per row for the pixel buffer
-    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
-    
-    //Get the number of bytes per row for the pixel buffer
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    
-    //Get the pixel buffer width and height
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    
-    //Create device dependent RGB color space
-    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    //Create a bitmap graphics reference context with the sample buffer data
-    //CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    
-    ////Create device dependent gray color space
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    
-    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGImageAlphaNone);
-    
-    // Create a Quartz image from the pixel data in the bitmap graphics context
-    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
-    
-    //cgimageref to data for storage
-    NSData *data = [NSData dataWithBytes:quartzImage length: bytesPerRow * height];
-    
-    CGColorSpaceRelease(colorSpace);
-    CGContextRelease(context);
-    
-    NSLog(@"%@", data);
-    
-    return data;
-    
-    */
-}
-
-//Create UIImage from sample buffer
-- (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer {
-    
-    //Get a CMSampleBuffer's core video image buffer forthe media data
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    
-    //Lock the base address of the pixel buffer
-    CVPixelBufferLockBaseAddress(imageBuffer, 0);
-    
-    //Get the number of bytes per row for the pixel buffer
-    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
-    
-    //Get the number of bytes per row for the pixel buffer
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    
-    //Get the pixel buffer width and height
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    
-    //Create device dependent RGB color space
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    //Create a bitmap graphics context with the sample buffer data
-    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    
-    // Create a Quartz image from the pixel data in the bitmap graphics context
-    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
-    
-    // Unlock the pixel buffer
-    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-    
-    // Free up the context and color space
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Create an image object from the Quartz image
-    UIImage *image = [UIImage imageWithCGImage:quartzImage];
-    
-    // Release the Quartz image
-    CGImageRelease(quartzImage);
-    
-    return image;
-
-}
-
+//create subdirectories in Documents, Documents/Images && Documents/IMU && Documents/Images/ImagesTimeStamps, to hold captured images and imu
 - (void)subDirectorySetup {
     
-    //create subdirectories in Documents, Documents/Images && Documents/IMU && Documents/Images/ImagesTimeStamps, to hold captured images and imu
     NSError *error;
-    /*
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
-    NSString *dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
-    NSString *dataPathImagesTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/Images/timestamps.txt"];
-    NSString *dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
-    NSString *dataPathIMUTimeStamps = [documentsDirectory stringByAppendingPathComponent:@"/IMU/timestamps.txt"];
-     */
     
     //use these declarations to create folders at each viewDidLoad, essentially starting over each time
     
@@ -454,7 +343,6 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     
     [[NSFileManager defaultManager] createFileAtPath:dataPathIMUTimeStamps contents:nil attributes:nil]; //Create IMU/timestamps.txt textfile
     
-    //fileHandlerImages = [NSFileHandle fileHandleForWritingAtPath:dataPathImages];
     fileHandlerImagesTimeStamps = [NSFileHandle fileHandleForWritingAtPath:dataPathImagesTimeStamps];
     //fileHandlerIMU = [NSFileHandle fileHandleForWritingAtPath:dataPathIMU];
     fileHandlerIMUTimeStamps = [NSFileHandle fileHandleForWritingAtPath:dataPathIMUTimeStamps];
@@ -484,7 +372,7 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     double gyroDataz = self.manager.gyroData.rotationRate.z;
 
     
-    //accelerometer to two decimal points
+    //accelerometer labels to 4 decimal points
     /*
     self.xPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatax];
     self.yPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatay];
@@ -502,7 +390,7 @@ NSFileHandle *fileHandlerIMUTimeStamps;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
-        //[fileHandlerIMUTimeStamps writeData:textToFIle];
+        [fileHandlerIMUTimeStamps writeData:textToFIle];
         
     });
     
