@@ -10,8 +10,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMotion/CoreMotion.h>
 #import "VinsViewController.h"
+#import "AppDelegate.h"
 
-#define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
+//#define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
 #define GRAVITY ((double) 9.80781) //minneapolis specific, working on implementing CoreLocation for dynamics
 #define IMU_COLLECTION_INTERVAL ((double) 0.01) //10Hz
 #define PGM_HEADING640x480 @"P5\n640 480\n255\n"
@@ -63,7 +64,15 @@
 //UI/timing global setup
 Boolean dataPresenting;
 NSTimer *collectionInterval; //IMU time collection interval
+NSDate *zeroTime;
 int frameCounter;
+
+double accelx;
+double accely;
+double accelz;
+double gyrox;
+double gyroy;
+double gyroz;
 
 //directories to be used
 NSArray *paths;
@@ -80,10 +89,18 @@ NSFileHandle *fileHandlerIMUTimeStamps;
 //frame buffer size
 size_t bufferSize;
 
+//app delegate
+AppDelegate *appDelegate;
+
+-(NSUInteger)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
+    return UIInterfaceOrientationMaskLandscape;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     //class global setup
+    
     dataPresenting = false;
     frameCounter = 0;
     paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -93,19 +110,40 @@ size_t bufferSize;
     dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
     dataPathIMUTimeStamps = [dataPathIMU stringByAppendingPathComponent:@"/imuTimestamps.txt"];
     
-    //disable extra camera features (see function for more detail)
-    [self disableAutoFocus];
-    
     //create necessary subdirectories if not already present
     [self subDirectorySetup];
 
     //set orientation
     self.orientation = [[UIDevice currentDevice] orientation];
     
+    /*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        //IMU data set up
+        self.manager = [[CMMotionManager alloc] init];
+        dataPresenting = false;
+        [self showIMULabels:dataPresenting];
+        
+        //set up IMU collection intervals
+        self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+        [self.manager startAccelerometerUpdates];
+        
+        self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
+        [self.manager startGyroUpdates];
+        
+        //[self getIMUValues];
+        
+        //CMMotionManager initiation
+        collectionInterval = [NSTimer scheduledTimerWithTimeInterval:IMU_COLLECTION_INTERVAL target:self selector:@selector(getIMUValues) userInfo:nil repeats:true]; //100 Hz
+        
+    });
+     */
+    
     //IMU data set up
     self.manager = [[CMMotionManager alloc] init];
     dataPresenting = false;
     [self showIMULabels:dataPresenting];
+    
     
     //set up IMU collection intervals
     self.manager.accelerometerUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
@@ -114,16 +152,60 @@ size_t bufferSize;
     self.manager.gyroUpdateInterval = IMU_COLLECTION_INTERVAL;  // 100 Hz
     [self.manager startGyroUpdates];
     
+    [self getIMUValues];
+    
     //CMMotionManager initiation
-    collectionInterval = [NSTimer scheduledTimerWithTimeInterval:IMU_COLLECTION_INTERVAL target:self selector:@selector(getIMUValues:) userInfo:nil repeats:true]; //100 Hz
+    collectionInterval = [NSTimer scheduledTimerWithTimeInterval:IMU_COLLECTION_INTERVAL target:self selector:@selector(getIMUValues) userInfo:nil repeats:true]; //100 Hz
+    
+    
+    /*
+    NSOperationQueue *accelQueue = [[NSOperationQueue alloc] init];
+    
+    [[self manager] setGyroUpdateInterval:IMU_COLLECTION_INTERVAL];
+    [[self manager] setAccelerometerUpdateInterval:IMU_COLLECTION_INTERVAL];
+    
+    [[self manager] startAccelerometerUpdatesToQueue:accelQueue withHandler:^(CMAccelerometerData * _Nullable accelerometerData, NSError * _Nullable error) {
+        
+        accelx = self.manager.accelerometerData.acceleration.x;
+        accely = self.manager.accelerometerData.acceleration.y;
+        accelz = self.manager.accelerometerData.acceleration.z;
+        
+    }];
+    
+    NSOperationQueue *gyroQueue = [[NSOperationQueue alloc] init];
+    
+    [[self manager] setGyroUpdateInterval:IMU_COLLECTION_INTERVAL];
+    [[self manager] setAccelerometerUpdateInterval:IMU_COLLECTION_INTERVAL];
+    
+    [[self manager] startGyroUpdatesToQueue:gyroQueue withHandler:^(CMGyroData * _Nullable gyroData, NSError * _Nullable error) {
+        
+        gyrox = self.manager.gyroData.rotationRate.x;
+        gyroy = self.manager.gyroData.rotationRate.y;
+        gyroz = self.manager.gyroData.rotationRate.z;
+        
+    }];
+    */
+    
+    
+    //disable extra camera features (see function for more detail)
+    [self disableAutoFocus];
     
     //begin camera session
     [self startCameraSession];
     [self setupPreviewLayer];
     
+    //set landscape left as output normal
+    if ([[self captureConnection] isVideoOrientationSupported]) {
+        ///test
+        [[self captureConnection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+        
+    }
+    
     //monitor orientation changes i.e. portrait vs landscape
+    /*
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
+     */
     
 }
 
@@ -131,8 +213,12 @@ size_t bufferSize;
     
     [self.imageCaptureSession stopRunning];
     [collectionInterval invalidate];
-    collectionInterval = nil;
+    [[self manager] stopAccelerometerUpdates];
+    [[self manager] stopGyroUpdates];
     
+    collectionInterval = nil;
+    zeroTime = nil;
+        
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -151,7 +237,7 @@ size_t bufferSize;
     [[self.showDataButtonOutlet layer] setBorderWidth:2.0f];
     [[self.showDataButtonOutlet layer] setCornerRadius:10.0];
     [[self.showDataButtonOutlet layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    
+
 }
 
 //conform to UIGesturerecognizerDelegate for back swipe and no nav
@@ -211,17 +297,26 @@ size_t bufferSize;
     self.imageOutput = [[AVCaptureVideoDataOutput alloc] init];
     [self.imageCaptureSession addOutput:self.imageOutput];
     
+    //set up connection and proper output orientation
+    self.captureConnection = [[self imageOutput] connectionWithMediaType:AVMediaTypeVideo];
+    
     // Configure your output.
     dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
     [self.imageOutput setSampleBufferDelegate:self queue:queue];
     
     // Specify the pixel format
-    //self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     
     // set frame rate to ~30fps
+    /*
     [device lockForConfiguration:nil];
     device.activeVideoMinFrameDuration = CMTimeMake(1, 30);
+    [device unlockForConfiguration];
+     */
+    int fps = 30;  // 30 fps
+    [device lockForConfiguration:nil];
+    [device setActiveVideoMinFrameDuration:CMTimeMake(1, fps)];
+    [device setActiveVideoMaxFrameDuration:CMTimeMake(1, fps)];
     [device unlockForConfiguration];
     
     //discard frames if processor running behind
@@ -240,7 +335,11 @@ size_t bufferSize;
     CALayer *root = [self.cameraView layer];
     [root setMasksToBounds:true];
     CGRect frame = [self.view frame];
+
+    [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+    self.previewInputLayer.frame = self.view.bounds;
     
+    /*
     if (self.orientation == UIInterfaceOrientationPortrait) {
         
         [self.previewInputLayer.connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
@@ -257,6 +356,7 @@ size_t bufferSize;
         self.previewInputLayer.frame = self.view.bounds;
         
     }
+     */
     
     [self.previewInputLayer setFrame:frame];
     [root insertSublayer:self.previewInputLayer atIndex:0];
@@ -294,29 +394,46 @@ size_t bufferSize;
 // Delegate routine that is called when a sample buffer was written
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     
+    //filename/path for buffer image
     NSString *filePath = [NSString stringWithFormat:@"%@/m%07d.pgm", dataPathImages, frameCounter];
     
+    //initialize file with pgm formatting
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:[PGM_HEADING640x480 dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
     
+    //set destination of output buffer to created file path
     fileHandlerImages = [NSFileHandle fileHandleForWritingAtPath:filePath];
     
+    //process captured buffer data
     CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0); //lock buffer address for recording
     
     size_t bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
-    //size_t bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
     size_t bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
     bufferSize = bufferHeight * bytesPerRow;
     
     unsigned char *rowBase = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
     
+    //write organized buffer data to NSData for file
     NSData *data = [NSData dataWithBytes:rowBase length:bufferSize];
     
+    //write to file
     [fileHandlerImages seekToEndOfFile];
     [fileHandlerImages writeData:data];
     [fileHandlerImages closeFile];
     
+    //release address
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+
+    //write to timestamp file
+    NSDate *time = [NSDate date];
+    NSTimeInterval differenceTime = [time timeIntervalSinceDate:zeroTime];
+    NSData *textToFIle = [[NSString stringWithFormat:@"m%07d.pgm %f\n", frameCounter, differenceTime] dataUsingEncoding:NSUTF8StringEncoding];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        [fileHandlerImagesTimeStamps writeData:textToFIle];
+        
+    });
     
     frameCounter += 1;
     
@@ -361,7 +478,7 @@ size_t bufferSize;
     
 }
 
-- (void)getIMUValues:(NSTimer *)timer {
+- (void)getIMUValues {
     
     double accelDatax = self.manager.accelerometerData.acceleration.x * GRAVITY;
     double accelDatay = self.manager.accelerometerData.acceleration.y * GRAVITY;
@@ -373,7 +490,7 @@ size_t bufferSize;
 
     
     //accelerometer labels to 4 decimal points
-    /*
+    
     self.xPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatax];
     self.yPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDatay];
     self.zPositionAcc.text = [NSString stringWithFormat:@"%.4f", accelDataz];
@@ -382,11 +499,19 @@ size_t bufferSize;
     self.xPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatax];
     self.yPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDatay];
     self.zPositionGyro.text = [NSString stringWithFormat:@"%.4f", gyroDataz];
-     */
+     
     
     //writing data to file more efficiently
+    NSDate *time = [NSDate date];
     
-    NSData *textToFIle = [[NSString stringWithFormat:@"%@ - gyro %f %f %f accel %f %f %f\n", TIMESTAMP, gyroDatax, gyroDatay, gyroDataz, accelDatax, accelDatay, accelDataz] dataUsingEncoding:NSUTF8StringEncoding];
+    if (zeroTime == nil) {
+        
+        zeroTime = time;
+    
+    }
+    
+    NSTimeInterval differenceTime = [time timeIntervalSinceDate:zeroTime];
+    NSData *textToFIle = [[NSString stringWithFormat:@"%f - gyro %f %f %f accel %f %f %f\n", differenceTime, gyroDatax, gyroDatay, gyroDataz, accelDatax, accelDatay, accelDataz] dataUsingEncoding:NSUTF8StringEncoding];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         

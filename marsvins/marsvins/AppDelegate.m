@@ -17,6 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+        
     return YES;
 }
 
@@ -41,5 +42,17 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+/*
+//BOOL shouldRotate;
+
+-(UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
+    if (self.shouldRotate)
+        return UIInterfaceOrientationMaskAllButUpsideDown;
+    else
+        return UIInterfaceOrientationMaskLandscapeLeft;
+
+}
+ */
 
 @end

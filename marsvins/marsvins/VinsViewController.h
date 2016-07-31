@@ -20,10 +20,12 @@
 
 @property (nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
 
+@property (nonatomic) AVCaptureConnection *captureConnection; //connection
+
 - (void)startCameraSession;
 
 - (void)showIMULabels:(BOOL)areShowing;
 
-- (void)getIMUValues:(NSTimer *)timer;
+- (void)getIMUValues;
 
 @end
