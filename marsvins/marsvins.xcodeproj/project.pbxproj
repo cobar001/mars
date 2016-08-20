@@ -18,6 +18,12 @@
 		F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */; };
 		F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */; };
 		F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */; };
+		F6D5D8961D52C21A002C9A03 /* Interpolator.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8951D52C21A002C9A03 /* Interpolator.m */; };
+		F6D5D8991D52C382002C9A03 /* GyroData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8981D52C382002C9A03 /* GyroData.m */; };
+		F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D89B1D52C395002C9A03 /* AccelData.m */; };
+		F6D5D8BE1D53C8BB002C9A03 /* IMUMeasurement.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8BD1D53C8BB002C9A03 /* IMUMeasurement.m */; };
+		F6D5D8C11D543C47002C9A03 /* LinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8C01D543C47002C9A03 /* LinkedList.m */; };
+		F6D5D8C41D544727002C9A03 /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8C31D544727002C9A03 /* Node.m */; };
 		F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */; };
 		F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */; };
 		F6FB5C521D42C3E400F62F96 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */; };
@@ -52,6 +58,18 @@
 		F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F6D5D8941D52C21A002C9A03 /* Interpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interpolator.h; sourceTree = "<group>"; };
+		F6D5D8951D52C21A002C9A03 /* Interpolator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Interpolator.m; sourceTree = "<group>"; };
+		F6D5D8971D52C382002C9A03 /* GyroData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GyroData.h; sourceTree = "<group>"; };
+		F6D5D8981D52C382002C9A03 /* GyroData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GyroData.m; sourceTree = "<group>"; };
+		F6D5D89A1D52C395002C9A03 /* AccelData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccelData.h; sourceTree = "<group>"; };
+		F6D5D89B1D52C395002C9A03 /* AccelData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccelData.m; sourceTree = "<group>"; };
+		F6D5D8BC1D53C8BB002C9A03 /* IMUMeasurement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMUMeasurement.h; sourceTree = "<group>"; };
+		F6D5D8BD1D53C8BB002C9A03 /* IMUMeasurement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMUMeasurement.m; sourceTree = "<group>"; };
+		F6D5D8BF1D543C47002C9A03 /* LinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedList.h; sourceTree = "<group>"; };
+		F6D5D8C01D543C47002C9A03 /* LinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedList.m; sourceTree = "<group>"; };
+		F6D5D8C21D544727002C9A03 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
+		F6D5D8C31D544727002C9A03 /* Node.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Node.m; sourceTree = "<group>"; };
 		F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -132,6 +150,15 @@
 		F62CF3621D3AA9E200C06A6E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F6D5D8941D52C21A002C9A03 /* Interpolator.h */,
+				F6D5D8951D52C21A002C9A03 /* Interpolator.m */,
+				F6D5D8971D52C382002C9A03 /* GyroData.h */,
+				F6D5D8981D52C382002C9A03 /* GyroData.m */,
+				F6D5D89A1D52C395002C9A03 /* AccelData.h */,
+				F6D5D89B1D52C395002C9A03 /* AccelData.m */,
+				F6D5D8BC1D53C8BB002C9A03 /* IMUMeasurement.h */,
+				F6D5D8BD1D53C8BB002C9A03 /* IMUMeasurement.m */,
+				F6D5D8C51D54F38C002C9A03 /* List */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -170,6 +197,17 @@
 				F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */,
 			);
 			name = frameworks;
+			sourceTree = "<group>";
+		};
+		F6D5D8C51D54F38C002C9A03 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				F6D5D8BF1D543C47002C9A03 /* LinkedList.h */,
+				F6D5D8C01D543C47002C9A03 /* LinkedList.m */,
+				F6D5D8C21D544727002C9A03 /* Node.h */,
+				F6D5D8C31D544727002C9A03 /* Node.m */,
+			);
+			name = List;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,7 +311,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6D5D8BE1D53C8BB002C9A03 /* IMUMeasurement.m in Sources */,
+				F6D5D8991D52C382002C9A03 /* GyroData.m in Sources */,
 				F62CF3421D3AA35D00C06A6E /* InitialViewController.m in Sources */,
+				F6D5D8C11D543C47002C9A03 /* LinkedList.m in Sources */,
+				F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */,
+				F6D5D8C41D544727002C9A03 /* Node.m in Sources */,
+				F6D5D8961D52C21A002C9A03 /* Interpolator.m in Sources */,
 				F62CF33F1D3AA35D00C06A6E /* AppDelegate.m in Sources */,
 				F62CF3611D3AA9D600C06A6E /* VinsViewController.m in Sources */,
 				F62CF33C1D3AA35D00C06A6E /* main.m in Sources */,
@@ -406,7 +450,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: christopherbco@gmail.com (2X4QWL45Z5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = marsvins/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -420,7 +464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: christopherbco@gmail.com (2X4QWL45Z5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = marsvins/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

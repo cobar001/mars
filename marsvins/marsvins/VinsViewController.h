@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
-
 
 @interface VinsViewController : UIViewController <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -22,10 +22,12 @@
 
 @property (nonatomic) AVCaptureConnection *captureConnection; //connection
 
+@property (nonatomic) NSLock *gyroLock;
+
+@property (nonatomic) NSLock *accelLock;
+
+@property (nonatomic, readwrite) bool is640;
+
 - (void)startCameraSession;
-
-- (void)showIMULabels:(BOOL)areShowing;
-
-- (void)getIMUValues;
 
 @end
