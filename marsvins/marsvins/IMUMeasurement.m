@@ -32,15 +32,30 @@
     
 }
 
+/*
+- (GyroData *)gyroR: (GyroData *)gyro {
+    
+    
+    
+}
+
+- (AccelData *)accelR: (AccelData *)accel {
+    
+    
+    
+}
+*/
+
+//altered output to account for transformation
 - (NSString *)toString {
     
     return [NSString stringWithFormat:@"%f 0 %f %f %f %f %f %f 0 0 0",
             self.timeStamp,
-            self.gyroMeasurement.rotationX,
-            self.gyroMeasurement.rotationY,
-            self.gyroMeasurement.rotationZ,
-            self.accelMeasurement.accelerationX,
+            self.gyroMeasurement.rotationY * -1,
+            self.gyroMeasurement.rotationX * -1,
+            self.gyroMeasurement.rotationZ * -1,
             self.accelMeasurement.accelerationY,
+            self.accelMeasurement.accelerationX,
             self.accelMeasurement.accelerationZ];
     
 }

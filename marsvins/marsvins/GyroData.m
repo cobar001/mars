@@ -24,6 +24,7 @@
         self.rotationY = rotationY;
         self.rotationZ = rotationZ;
         
+        
     } else {
         
         self = nil;

@@ -88,14 +88,14 @@ AppDelegate *appDelegate;
     paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
     dataPathImages = [documentsDirectory stringByAppendingPathComponent:@"/Images"];
-    dataPathImagesTimeStamps = [dataPathImages stringByAppendingPathComponent:@"/imageTimestamps.txt"];
+    dataPathImagesTimeStamps = [dataPathImages stringByAppendingPathComponent:@"/timestamps.txt"];
     dataPathIMU = [documentsDirectory stringByAppendingPathComponent:@"/IMU"];
     dataPathIMUTimeStamps = [dataPathIMU stringByAppendingString:@"/imu.txt"];
     dataPathIMUATimeStamps = [dataPathIMU stringByAppendingPathComponent:@"/imuAccelTimestamps.txt"];
     dataPathIMUGTimeStamps = [dataPathIMU stringByAppendingPathComponent:@"/imuGyroTimestamps.txt"];
     
     dataPathImages1280 = [documentsDirectory stringByAppendingPathComponent:@"/Images1280"];
-    dataPathImagesTimeStamps1280 = [dataPathImages1280 stringByAppendingPathComponent:@"/imageTimestamps1280.txt"];
+    dataPathImagesTimeStamps1280 = [dataPathImages1280 stringByAppendingPathComponent:@"/timestamps.txt"];
     
     //create necessary subdirectories if not already present
     [self subDirectorySetup];
@@ -196,7 +196,6 @@ AppDelegate *appDelegate;
     [[self manager] stopAccelerometerUpdates];
     [[self manager] stopGyroUpdates];
     [UIApplication sharedApplication].idleTimerDisabled = false;
-    NSLog(@"%d", frameCounter);
     
 }
 
