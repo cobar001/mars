@@ -10,6 +10,7 @@
 
 @interface InitialViewController : UIViewController
 
+- (NSString *) openCVVersionString;
 
 @end
 
