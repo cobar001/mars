@@ -16,9 +16,9 @@
 
 @property (nonatomic) CMMotionManager *manager; //IMU
 
-@property (nonatomic) AVCaptureSession *imageCaptureSession; //camera in
+@property (nonatomic) AVCaptureSession *imageCaptureSession; //camera session
 
-@property (nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
+@property (nonatomic) AVCaptureVideoDataOutput *ImageOutput; //camera out
 
 @property (nonatomic) AVCaptureConnection *captureConnection; //connection
 

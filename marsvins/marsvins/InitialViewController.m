@@ -14,9 +14,8 @@
 
 @end
 
+
 @implementation InitialViewController
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,7 +23,7 @@
     
     [self setupLeftSwipeLabel];
     [self setupRightSwipeLabel];
-
+    
 }
 
 - (void)setupLeftSwipeLabel {
@@ -74,7 +73,7 @@
         vc.is640 = false;
         
     }
-    
+        
 }
 
 - (void)viewWillAppear:(BOOL)animated {

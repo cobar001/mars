@@ -17,7 +17,7 @@
 #import "IMUMeasurement.h"
 
 //#define TIMESTAMP [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]
-#define GRAVITY ((double) 9.80781) //minneapolis specific, working on implementing CoreLocation for dynamics
+#define GRAVITY ((double) 9.80781) //minneapolis specific
 #define IMU_COLLECTION_INTERVAL 0.01f // 100Hz
 #define PGM_HEADING640x480 @"P5\n640 480\n255\n"
 #define PGM_HEADING1280x720 @"P5\n1280 720\n255\n"
@@ -32,6 +32,12 @@
 
 @implementation VinsViewController
 
+AVCaptureDeviceInput *backCameraInput;
+AVCaptureDeviceInput *frontCameraInput;
+
+AVCaptureDevice *backCamera;
+AVCaptureDevice *frontCamera;
+
 //UI/timing global setup
 double uptime;
 int frameCounter;
@@ -39,8 +45,10 @@ int frameCounter;
 //directories to be used
 NSArray *paths;
 NSString *documentsDirectory;
+
 NSString *dataPathImages;
 NSString *dataPathImagesTimeStamps;
+
 NSString *dataPathIMU;
 NSString *dataPathIMUTimeStamps;
 NSString *dataPathIMUATimeStamps;
@@ -51,6 +59,7 @@ NSString *dataPathImagesTimeStamps1280;
 
 NSFileHandle *fileHandlerImages;
 NSFileHandle *fileHandlerImagesTimeStamps;
+
 NSFileHandle *fileHandlerIMUTimeStamps;
 NSFileHandle *fileHandlerIMUATimeStamps;
 NSFileHandle *fileHandlerIMUGTimeStamps;
@@ -108,6 +117,7 @@ AppDelegate *appDelegate;
     
     //setup Qs
     cameraQueue = [[NSOperationQueue alloc] init];
+    
     interpolatorQueue = [[NSOperationQueue alloc] init];
     interpolator = [[Interpolator alloc] init];
     
@@ -180,7 +190,7 @@ AppDelegate *appDelegate;
     }
     
     [self setupResLabel];
-    
+    [self switchCameraButton];
     //monitor orientation changes i.e. portrait vs landscape
     /*
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -235,7 +245,47 @@ AppDelegate *appDelegate;
     [switchLabel.centerXAnchor constraintEqualToAnchor:self.cameraView.centerXAnchor].active = true;
     [switchLabel.topAnchor constraintEqualToAnchor:self.cameraView.topAnchor constant:80.0].active = true;
     [switchLabel.widthAnchor constraintEqualToAnchor:self.cameraView.widthAnchor constant:-50.0].active = true;
-    [switchLabel.heightAnchor constraintEqualToConstant:60].active = true;
+    [switchLabel.heightAnchor constraintEqualToConstant:60.0].active = true;
+    
+}
+
+- (void)switchCameraButton {
+    
+    UIButton *switchButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [switchButton setTitle:@"switch camera" forState: UIControlStateNormal];
+    [switchButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    switchButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    switchButton.layer.borderWidth = 5.0;
+    switchButton.layer.cornerRadius = 3.0;
+    switchButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    switchButton.translatesAutoresizingMaskIntoConstraints = false;
+    [self.view addSubview:switchButton];
+    
+    [switchButton.centerXAnchor constraintEqualToAnchor:self.cameraView.centerXAnchor].active = true;
+    [switchButton.bottomAnchor constraintEqualToAnchor:self.cameraView.bottomAnchor constant:-30.0].active = true;
+    [switchButton.widthAnchor constraintEqualToConstant:300.0].active = true;
+    [switchButton.heightAnchor constraintEqualToConstant:60.0].active = true;
+    
+    [switchButton addTarget:self action:@selector(cycleCameras) forControlEvents:UIControlEventTouchUpInside];
+    
+}
+
+- (void)cycleCameras {
+    
+    if ([self.imageCaptureSession inputs].firstObject == backCameraInput) {
+        [self.imageCaptureSession removeInput:backCameraInput];
+        //[self.imageCaptureSession removeOutput:self.ImageOutput];
+        [self.imageCaptureSession addInput:frontCameraInput];
+        //[self configureOutput:frontCameraInput];
+        //[self configureCameraForHighestFrameRate:frontCamera];
+        
+    } else {
+        [self.imageCaptureSession removeInput:frontCameraInput];
+        //[self.imageCaptureSession removeOutput:self.ImageOutput];
+        [self.imageCaptureSession addInput:backCameraInput];
+        //[self configureOutput:backCameraInput];
+        //[self configureCameraForHighestFrameRate:backCamera];
+    }
     
 }
 
@@ -245,8 +295,9 @@ AppDelegate *appDelegate;
 }
 
 //ala 240 fps, but only with >= 720x1280def
-- (void)configureCameraForHighestFrameRate:(AVCaptureDevice *)device
-{
+- (void)configureCameraHighestFrameRate:(AVCaptureDevice *)device {
+
+    /*
     AVCaptureDeviceFormat *bestFormat = nil;
     AVFrameRateRange *bestFrameRateRange = nil;
     for (AVCaptureDeviceFormat *format in [device formats]) {
@@ -265,10 +316,13 @@ AppDelegate *appDelegate;
             [device unlockForConfiguration];
         }
     }
-
+     */
+    
 }
 
 - (void)startCameraSession {
+    
+    //SESSION CONFIGURATION//
     
     NSError *error = nil;
     
@@ -286,57 +340,107 @@ AppDelegate *appDelegate;
 
     }
     
-    // Find a suitable AVCaptureDevice
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    //INPUT DEVICE(S) SET UP//
+    
+    // Find a suitable AVCaptureDevice and configure fps
+    //AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    int fps = 30;
+
+    for (AVCaptureDevice *device in [self findCameras]) {
+     
+        if (([device hasMediaType:AVMediaTypeVideo]) && ([device position] == AVCaptureDevicePositionBack)) {
+            
+            backCamera = device;
+            [backCamera lockForConfiguration:nil];
+            [backCamera setActiveVideoMinFrameDuration:CMTimeMake(1, fps)];
+            [backCamera setActiveVideoMaxFrameDuration:CMTimeMake(1, fps)];
+            [backCamera unlockForConfiguration];
+            [self disableAutoFocus:backCamera];
+            
+        } else if (([device hasMediaType:AVMediaTypeVideo]) && ([device position] == AVCaptureDevicePositionFront)) {
+            
+            frontCamera = device;
+            [frontCamera lockForConfiguration:nil];
+            [frontCamera setActiveVideoMinFrameDuration:CMTimeMake(1, fps)];
+            [frontCamera setActiveVideoMaxFrameDuration:CMTimeMake(1, fps)];
+            [frontCamera unlockForConfiguration];
+            
+        }
+        
+    }
     
     // Create a device input with the device and add it to the session.
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+    backCameraInput = [AVCaptureDeviceInput deviceInputWithDevice:backCamera error:&error];
+    frontCameraInput = [AVCaptureDeviceInput deviceInputWithDevice:frontCamera error:&error];
     
-    if (!input) {
+    if (!backCameraInput) {
         // Handling the error appropriately.
         NSLog(@"%@", error);
     }
     
-    [self.imageCaptureSession addInput:input];
+    if (!frontCameraInput) {
+        NSLog(@"%@", error);
+    }
     
-    // Create a VideoDataOutput and add it to the session
-    self.imageOutput = [[AVCaptureVideoDataOutput alloc] init];
-    [self.imageCaptureSession addOutput:self.imageOutput];
-    
-    //set up connection and proper output orientation
-    self.captureConnection = [[self imageOutput] connectionWithMediaType:AVMediaTypeVideo];
-    
-    // Configure your output.
-    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
-    [self.imageOutput setSampleBufferDelegate:self queue:queue];
-    
-    // Specify the pixel format
-    self.imageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    [self.imageCaptureSession addInput:backCameraInput];
     
     // set frame rate
+    
+    /*
     if ([self is640]) {
         
         int fps = 30;
-        [device lockForConfiguration:nil];
-        [device setActiveVideoMinFrameDuration:CMTimeMake(1, fps)];
-        [device setActiveVideoMaxFrameDuration:CMTimeMake(1, fps)];
-        [device unlockForConfiguration];
+        [backCamera lockForConfiguration:nil];
+        [backCamera setActiveVideoMinFrameDuration:CMTimeMake(1, fps)];
+        [backCamera setActiveVideoMaxFrameDuration:CMTimeMake(1, fps)];
+        [backCamera unlockForConfiguration];
         
     } else {
         
         //set frame rate to highest possible
-        [self configureCameraForHighestFrameRate:device];
-
+        [self configureCameraForHighestFrameRate:backCamera];
+        
+        
     }
+     */
     
-    //diable auto focus
-    [self disableAutoFocus];
+    //END INPUT DEVICE(S) SET UP//
     
-    //discard frames if processor running behind
-    [self.imageOutput setAlwaysDiscardsLateVideoFrames:true];
+    //CAMERA OUTPUT SET UP//
+   
+    [self configureOutput:backCameraInput];
+    
+    //END BACK CAMERA OUTPUT SET UP//
     
     // Start the session running to start the flow of data
     [self.imageCaptureSession startRunning];
+    
+    //END SESSION CONFIGURATION//
+}
+
+- (void)configureOutput:(AVCaptureDeviceInput *)input {
+    
+    //CAMERA OUTPUT SET UP//
+        
+    // Create a VideoDataOutput and add it to the session
+    self.ImageOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [self.imageCaptureSession addOutput:self.ImageOutput];
+        
+    //to set up connection with proper output orientation
+    self.captureConnection = [[self ImageOutput] connectionWithMediaType:AVMediaTypeVideo];
+        
+    // Configure your output.
+    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+    [self.ImageOutput setSampleBufferDelegate:self queue:queue];
+        
+    // Specify the pixel format
+    self.ImageOutput.videoSettings = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+        
+    //diable auto focus
+    //[self disableAutoFocus];
+        
+    //discard frames if processor running behind
+    [self.ImageOutput setAlwaysDiscardsLateVideoFrames:true];
     
 }
 
@@ -567,42 +671,36 @@ AppDelegate *appDelegate;
 }
 
 //disabling extra camera capabilities (autofocus, flash, and torch)
--(void)disableAutoFocus {
+-(void)disableAutoFocus: (AVCaptureDevice *)device {
     
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     [device lockForConfiguration:nil];
-    //[device setTorchMode:AVCaptureTorchModeOff];
-    //[device setFlashMode:AVCaptureFlashModeOff];
     
-    
-    NSArray *devices = [AVCaptureDevice devices];
     NSError *error;
-    for (AVCaptureDevice *device in devices) {
-        
-        if (([device hasMediaType:AVMediaTypeVideo]) && ([device position] == AVCaptureDevicePositionBack) ) {
+    if (([device hasMediaType:AVMediaTypeVideo]) && ([device position] == AVCaptureDevicePositionBack) ) {
             
-            [device lockForConfiguration:&error];
-            /*
-            if ([device isExposureModeSupported:AVCaptureExposureModeLocked]) {
-                [device setExposureMode:AVCaptureExposureModeLocked];
-            }
-            if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
-                [device setWhiteBalanceMode:AVCaptureWhiteBalanceModeLocked];
-            }
-            if ([device isLowLightBoostSupported]) {
-                [device setAutomaticallyEnablesLowLightBoostWhenAvailable:false];
-            }
-            */
-            if ([device isFocusModeSupported:AVCaptureFocusModeLocked]) {
-                device.focusMode = AVCaptureFocusModeLocked;
-            }
-            
+        [device lockForConfiguration:&error];
+        if ([device isFocusModeSupported:AVCaptureFocusModeLocked]) {
+            device.focusMode = AVCaptureFocusModeLocked;
         }
-        
+            
     }
     
     [device unlockForConfiguration];
     
+}
+
+- (NSMutableArray *)findCameras {
+   
+    NSArray *totalDevices = [AVCaptureDevice devices];
+    NSMutableArray *cameraDevices = [[NSMutableArray alloc] init];
+    
+    for (AVCaptureDevice *device in totalDevices) {
+        if ([device.deviceType isEqual:@"AVCaptureDeviceTypeBuiltInWideAngleCamera"]) {
+            [cameraDevices addObject:device];
+        }
+    }
+    
+    return cameraDevices;
 }
 
 /*

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		F62CF33C1D3AA35D00C06A6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF33B1D3AA35D00C06A6E /* main.m */; };
 		F62CF33F1D3AA35D00C06A6E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */; };
-		F62CF3421D3AA35D00C06A6E /* InitialViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3411D3AA35D00C06A6E /* InitialViewController.mm */; };
+		F62CF3421D3AA35D00C06A6E /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F62CF3411D3AA35D00C06A6E /* InitialViewController.m */; };
 		F62CF3451D3AA35D00C06A6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3431D3AA35D00C06A6E /* Main.storyboard */; };
 		F62CF3471D3AA35D00C06A6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3461D3AA35D00C06A6E /* Assets.xcassets */; };
 		F62CF34A1D3AA35D00C06A6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62CF3481D3AA35D00C06A6E /* LaunchScreen.storyboard */; };
@@ -18,7 +18,6 @@
 		F62CF3661D3ABDAA00C06A6E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */; };
 		F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */; };
 		F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */; };
-		F69CAA941D7899F9008372D1 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F69CAA931D7899F9008372D1 /* opencv2.framework */; };
 		F6D5D8961D52C21A002C9A03 /* Interpolator.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8951D52C21A002C9A03 /* Interpolator.m */; };
 		F6D5D8991D52C382002C9A03 /* GyroData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8981D52C382002C9A03 /* GyroData.m */; };
 		F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D89B1D52C395002C9A03 /* AccelData.m */; };
@@ -46,7 +45,7 @@
 		F62CF33D1D3AA35D00C06A6E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		F62CF3401D3AA35D00C06A6E /* InitialViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InitialViewController.h; sourceTree = "<group>"; };
-		F62CF3411D3AA35D00C06A6E /* InitialViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = InitialViewController.mm; sourceTree = "<group>"; };
+		F62CF3411D3AA35D00C06A6E /* InitialViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InitialViewController.m; sourceTree = "<group>"; };
 		F62CF3441D3AA35D00C06A6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F62CF3461D3AA35D00C06A6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F62CF3491D3AA35D00C06A6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -59,7 +58,6 @@
 		F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		F69CAA931D7899F9008372D1 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		F6D5D8941D52C21A002C9A03 /* Interpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interpolator.h; sourceTree = "<group>"; };
 		F6D5D8951D52C21A002C9A03 /* Interpolator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Interpolator.m; sourceTree = "<group>"; };
 		F6D5D8971D52C382002C9A03 /* GyroData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GyroData.h; sourceTree = "<group>"; };
@@ -83,7 +81,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6FB5C521D42C3E400F62F96 /* CoreLocation.framework in Frameworks */,
-				F69CAA941D7899F9008372D1 /* opencv2.framework in Frameworks */,
 				F6FB5C501D41C6F300F62F96 /* CoreVideo.framework in Frameworks */,
 				F6FB5C4E1D41C6EA00F62F96 /* CoreMedia.framework in Frameworks */,
 				F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */,
@@ -172,7 +169,7 @@
 				F62CF33D1D3AA35D00C06A6E /* AppDelegate.h */,
 				F62CF33E1D3AA35D00C06A6E /* AppDelegate.m */,
 				F62CF3401D3AA35D00C06A6E /* InitialViewController.h */,
-				F62CF3411D3AA35D00C06A6E /* InitialViewController.mm */,
+				F62CF3411D3AA35D00C06A6E /* InitialViewController.m */,
 				F62CF35F1D3AA9D600C06A6E /* VinsViewController.h */,
 				F62CF3601D3AA9D600C06A6E /* VinsViewController.m */,
 			);
@@ -192,7 +189,6 @@
 		F62CF3691D3ABDD700C06A6E /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F69CAA931D7899F9008372D1 /* opencv2.framework */,
 				F6FB5C511D42C3E400F62F96 /* CoreLocation.framework */,
 				F6FB5C4F1D41C6F300F62F96 /* CoreVideo.framework */,
 				F6FB5C4D1D41C6EA00F62F96 /* CoreMedia.framework */,
@@ -317,7 +313,7 @@
 			files = (
 				F6D5D8BE1D53C8BB002C9A03 /* IMUMeasurement.m in Sources */,
 				F6D5D8991D52C382002C9A03 /* GyroData.m in Sources */,
-				F62CF3421D3AA35D00C06A6E /* InitialViewController.mm in Sources */,
+				F62CF3421D3AA35D00C06A6E /* InitialViewController.m in Sources */,
 				F6D5D8C11D543C47002C9A03 /* LinkedList.m in Sources */,
 				F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */,
 				F6D5D8C41D544727002C9A03 /* Node.m in Sources */,
