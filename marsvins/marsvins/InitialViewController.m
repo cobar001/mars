@@ -14,9 +14,8 @@
 
 @end
 
+
 @implementation InitialViewController
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,7 +23,7 @@
     
     [self setupLeftSwipeLabel];
     [self setupRightSwipeLabel];
-
+    
 }
 
 - (void)setupLeftSwipeLabel {
@@ -47,7 +46,7 @@
 - (void)setupRightSwipeLabel {
     
     UILabel *switchLabel = [[UILabel alloc] init];
-    switchLabel.text = @"-> swipe right for 1280 720 ~240fps? collecting at 30fps";
+    switchLabel.text = @"-> swipe right for 1280 720 ~240fps, collecting at 30fps";
     switchLabel.numberOfLines = 2;
     switchLabel.textColor = [UIColor whiteColor];
     switchLabel.translatesAutoresizingMaskIntoConstraints = false;
@@ -74,7 +73,7 @@
         vc.is640 = false;
         
     }
-    
+        
 }
 
 - (void)viewWillAppear:(BOOL)animated {

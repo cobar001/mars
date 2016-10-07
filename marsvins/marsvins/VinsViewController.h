@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
+#import "FileConfiguration.h"
 
 @interface VinsViewController : UIViewController <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -16,11 +17,13 @@
 
 @property (nonatomic) CMMotionManager *manager; //IMU
 
-@property (nonatomic) AVCaptureSession *imageCaptureSession; //camera in
+@property (nonatomic) AVCaptureSession *imageCaptureSession; //camera session
 
-@property (nonatomic) AVCaptureVideoDataOutput *imageOutput; //camera out
+@property (nonatomic) AVCaptureVideoDataOutput *captureOutput; //frame output
 
 @property (nonatomic) AVCaptureConnection *captureConnection; //connection
+
+@property (nonatomic) FileConfiguration *fileManager;
 
 @property (nonatomic) NSLock *gyroLock;
 
