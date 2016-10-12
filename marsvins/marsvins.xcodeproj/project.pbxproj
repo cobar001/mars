@@ -19,6 +19,8 @@
 		F62CF3681D3ABDBD00C06A6E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF3671D3ABDBD00C06A6E /* CoreMotion.framework */; };
 		F62CF36B1D3ACDCC00C06A6E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */; };
 		F67530C21DA5738C00C7E72D /* FileConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = F67530C11DA5738C00C7E72D /* FileConfiguration.m */; };
+		F6C0BA8A1DAE9EAE00B340A1 /* iOS_camera_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6C0BA881DAE9EAE00B340A1 /* iOS_camera_driver.cpp */; };
+		F6C0BA8D1DAE9ED100B340A1 /* iOS_imu_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6C0BA8B1DAE9ED100B340A1 /* iOS_imu_driver.cpp */; };
 		F6D5D8961D52C21A002C9A03 /* Interpolator.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8951D52C21A002C9A03 /* Interpolator.m */; };
 		F6D5D8991D52C382002C9A03 /* GyroData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D8981D52C382002C9A03 /* GyroData.m */; };
 		F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D5D89B1D52C395002C9A03 /* AccelData.m */; };
@@ -61,6 +63,10 @@
 		F62CF36A1D3ACDCC00C06A6E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		F67530C01DA5738C00C7E72D /* FileConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileConfiguration.h; sourceTree = "<group>"; };
 		F67530C11DA5738C00C7E72D /* FileConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileConfiguration.m; sourceTree = "<group>"; };
+		F6C0BA881DAE9EAE00B340A1 /* iOS_camera_driver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iOS_camera_driver.cpp; sourceTree = "<group>"; };
+		F6C0BA891DAE9EAE00B340A1 /* iOS_camera_driver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = iOS_camera_driver.hpp; sourceTree = "<group>"; };
+		F6C0BA8B1DAE9ED100B340A1 /* iOS_imu_driver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iOS_imu_driver.cpp; sourceTree = "<group>"; };
+		F6C0BA8C1DAE9ED100B340A1 /* iOS_imu_driver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = iOS_imu_driver.hpp; sourceTree = "<group>"; };
 		F6D5D8941D52C21A002C9A03 /* Interpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interpolator.h; sourceTree = "<group>"; };
 		F6D5D8951D52C21A002C9A03 /* Interpolator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Interpolator.m; sourceTree = "<group>"; };
 		F6D5D8971D52C382002C9A03 /* GyroData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GyroData.h; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 		F62CF3391D3AA35D00C06A6E /* marsvins */ = {
 			isa = PBXGroup;
 			children = (
+				F6C0BA7C1DADD9C600B340A1 /* Drivers */,
 				F62CF3641D3AA9F600C06A6E /* Views */,
 				F62CF3631D3AA9EC00C06A6E /* Controllers */,
 				F62CF3621D3AA9E200C06A6E /* Models */,
@@ -202,6 +209,17 @@
 				F62CF3651D3ABDAA00C06A6E /* AVFoundation.framework */,
 			);
 			name = frameworks;
+			sourceTree = "<group>";
+		};
+		F6C0BA7C1DADD9C600B340A1 /* Drivers */ = {
+			isa = PBXGroup;
+			children = (
+				F6C0BA881DAE9EAE00B340A1 /* iOS_camera_driver.cpp */,
+				F6C0BA891DAE9EAE00B340A1 /* iOS_camera_driver.hpp */,
+				F6C0BA8B1DAE9ED100B340A1 /* iOS_imu_driver.cpp */,
+				F6C0BA8C1DAE9ED100B340A1 /* iOS_imu_driver.hpp */,
+			);
+			name = Drivers;
 			sourceTree = "<group>";
 		};
 		F6D5D8C51D54F38C002C9A03 /* List */ = {
@@ -323,7 +341,9 @@
 				F6D5D89C1D52C395002C9A03 /* AccelData.m in Sources */,
 				F67530C21DA5738C00C7E72D /* FileConfiguration.m in Sources */,
 				F6D5D8C41D544727002C9A03 /* Node.m in Sources */,
+				F6C0BA8D1DAE9ED100B340A1 /* iOS_imu_driver.cpp in Sources */,
 				F6D5D8961D52C21A002C9A03 /* Interpolator.m in Sources */,
+				F6C0BA8A1DAE9EAE00B340A1 /* iOS_camera_driver.cpp in Sources */,
 				F62CF33F1D3AA35D00C06A6E /* AppDelegate.m in Sources */,
 				F62CF3611D3AA9D600C06A6E /* VinsViewController.m in Sources */,
 				F62CF33C1D3AA35D00C06A6E /* main.m in Sources */,

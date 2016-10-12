@@ -63,7 +63,6 @@ AppDelegate *appDelegate;
     [super viewDidLoad];
     [UIApplication sharedApplication].idleTimerDisabled = true;
     
-    
     //class global setup
     uptime = [[NSProcessInfo processInfo] systemUptime]; //get uptime
     run_interpolator = true;
@@ -282,7 +281,7 @@ AppDelegate *appDelegate;
 }
 
 //disabling extra camera capabilities (autofocus, flash, and torch)
--(void)cameraDeviceConfig: (AVCaptureDevice *)device {
+- (void)cameraDeviceConfig: (AVCaptureDevice *)device {
     
     NSError *error;
     
@@ -306,6 +305,7 @@ AppDelegate *appDelegate;
         
         //set frame rate to highest possible
         [self configureCameraForHighestFrameRate:device];
+        
     }
     
 }
